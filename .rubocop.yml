@@ -40,3 +40,7 @@ IndentationWidth:
 # Seems to be buggy:
 EndAlignment:
   Enabled: false
+
+RegexpLiteral:
+  Enabled: false
+ 
