@@ -1,0 +1,44 @@
+# Common configuration.
+AllCops:
+  Exclude:
+    - Rakefile
+    - time_range.gemspec
+
+LineLength:
+  Enabled: true
+  Max: 80
+
+Documentation:
+  Enabled: false
+
+AlignHash:
+  Enabled: false
+
+# Buggy cop:
+EndOfLine:
+  Enabled: false
+
+AsciiComments:
+  Enabled: false
+
+# Not working for breaks_paid? method
+TrivialAccessors:
+  Enabled: false
+
+# Disabled since renaming has methods makes no sense
+PredicateName:
+  Enabled: false
+
+IndentationConsistency:
+  Enabled: false
+
+ConditionPosition:
+  Enabled: false
+
+# Seems to be buggy:
+IndentationWidth:
+  Enabled: false
+
+# Seems to be buggy:
+EndAlignment:
+  Enabled: false
