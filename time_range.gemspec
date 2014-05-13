@@ -7,9 +7,14 @@ Gem::Specification.new do |spec|
   spec.name          = 'time_range'
   spec.version       = VERSION
   spec.authors       = ['Patrick Derichs', 'Bernhard Stoecker', 'Jan Zernisch']
-  spec.email         = ['FT-Plan@injixo.com']
-  spec.description   = %q{TimeRange}
-  spec.summary       = %q{offers a specified range object for Time, Date or DateTime objects }
+  spec.email         = [
+    'patrick.derichs@invision.de',
+    'bernhard.stoecker@invision.de',
+    'jan.zernisch@invision.de'
+  ]
+  spec.description   = %q(TimeRange)
+  spec.summary       =
+    %q(offers a specified range object for Time, Date or DateTime objects)
   spec.homepage      = 'http://www.invision.de'
   spec.license       = ''
 
