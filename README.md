@@ -79,8 +79,9 @@ time_frame.without(other)
 # => [2014-05-12 00:00:00 +0200..2014-05-12 19:00:00 +0200, 2014-05-12 19:10:00 +0200..2014-05-13 00:00:00 +0200]
 another = other.shift_by(15.minutes)
 # => 2014-05-12 19:15:00 +0200..2014-05-12 19:25:00 +0200
-# You can also use an array for substraction:
-time_frame.without(*[other, another])
+
+# You can also use without with many TimeFrame's:
+time_frame.without(other, another)
 # => [2014-05-12 00:00:00 +0200..2014-05-12 19:00:00 +0200, 2014-05-12 19:10:00 +0200..2014-05-12 19:15:00 +0200, 2014-05-12 19:25:00 +0200..2014-05-13 00:00:00 +0200]
 
 # Use of the mathematical &. The intersection is returned:
