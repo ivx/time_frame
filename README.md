@@ -72,6 +72,15 @@ time_range = TimeRange.new(min: Time.now, duration: 1.day)
 other = TimeRange.new(min: Time.new(2014, 5, 12, 19), duration: 10.minutes)
 time_range.without(other)
 # => [2014-05-12 17:37:55 +0200..2014-05-12 19:00:00 +0200, 2014-05-12 19:10:00 +0200..2014-05-13 17:37:55 +0200]
+
+# Use of the mathematical &. The intersection is returned:
+time_range = TimeRange.new(min: Time.new(2014), duration: 1.day)
+=> 2014-01-01 00:00:00 +0100..2014-01-02 00:00:00 +0100
+other_time_range = time_range.shift_by(12.hours)
+=> 2014-01-01 12:00:00 +0100..2014-01-02 12:00:00 +0100
+time_range & other_time_range
+=> 2014-01-01 12:00:00 +0100..2014-01-02 00:00:00 +0100
+
 ```
 
 These are the most common functionalities of the `TimeRange` class, but there is quite more to discover: For instance, you can use `TimeRange#&`, `TimeRange#without` to compute the intersection and difference of two time ranges. If you have an array of time ranges, you can compute their union and pairwise intersection using `TimeRange.union` and `TimeRange.intersection`. For two sorted arrays of time ranges, you can traverse all overlaps of time ranges in the first array with time ranges in the second array in **linear time** using `TimeRange.each_overlap`.
