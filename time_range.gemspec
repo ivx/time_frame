@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   spec.summary       =
     %q(offers a specified range object for Time, Date or DateTime objects)
   spec.homepage      = 'http://www.invision.de'
-  spec.license       = ''
+  spec.license       = 'MIT'
 
   spec.files         = `git ls-files`.split($INPUT_RECORD_SEPARATOR)
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
