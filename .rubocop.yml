@@ -1,4 +1,3 @@
-# Common configuration.
 AllCops:
   Exclude: []
 
@@ -19,11 +18,9 @@ EndOfLine:
 AsciiComments:
   Enabled: false
 
-# Not working for breaks_paid? method
 TrivialAccessors:
   Enabled: false
 
-# Disabled since renaming has methods makes no sense
 PredicateName:
   Enabled: false
 
@@ -33,11 +30,9 @@ IndentationConsistency:
 ConditionPosition:
   Enabled: false
 
-# Seems to be buggy:
 IndentationWidth:
   Enabled: false
 
-# Seems to be buggy:
 EndAlignment:
   Enabled: false
 
