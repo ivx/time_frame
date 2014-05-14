@@ -1,4 +1,5 @@
-# class that models a time frame
+# The time frame class provides an specialized and enhanced range for time
+# values.
 class TimeFrame
   include Splitter
   attr_reader :min, :max

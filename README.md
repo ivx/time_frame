@@ -2,7 +2,7 @@
 
 ## Description
 
-The time frame class provides an specialized and enhanced frame for time values.
+The time frame class provides an specialized and enhanced range for time values.
 
 ## Installation
 

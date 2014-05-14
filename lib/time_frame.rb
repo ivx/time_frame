@@ -1,6 +1,6 @@
 require 'active_support/core_ext'
 
-# avoid i18n deprecation warning
+# Avoid i18n deprecation warning
 I18n.enforce_available_locales = false
 
 require 'time_frame/time_frame_splitter'
