@@ -1,8 +1,6 @@
 # Common configuration.
 AllCops:
-  Exclude:
-    - Rakefile
-    - time_range.gemspec
+  Exclude: []
 
 LineLength:
   Enabled: true
@@ -42,3 +40,7 @@ IndentationWidth:
 # Seems to be buggy:
 EndAlignment:
   Enabled: false
+
+RegexpLiteral:
+  Enabled: false
+ 
