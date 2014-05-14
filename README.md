@@ -4,6 +4,10 @@
 
 The time frame class provides an specialized and enhanced frame for time values.
 
+## Installation
+
+`gem install time_frame`
+
 ## Usage
 
 You can create a `TimeFrame` instance by specifying `min` and `max`
