@@ -1,4 +1,3 @@
-require_relative 'time_range'
 # Service class for TimeRange.
 #
 # traverses all intersections of in the cross product of two arrays of

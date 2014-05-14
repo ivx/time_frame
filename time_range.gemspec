@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'http://www.invision.de'
   spec.license       = ''
 
-  spec.files         = `git ls-files`.split($/)
+  spec.files         = Dir['lib/time_period.rb', 'lib/time_range/version.rb']
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']

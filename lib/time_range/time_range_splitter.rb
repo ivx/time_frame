@@ -1,4 +1,3 @@
-require_relative 'time_range'
 class TimeRange
   module Splitter
     def split_by_interval(interval)

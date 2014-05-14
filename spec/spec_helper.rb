@@ -4,7 +4,7 @@ SimpleCov.start do
   add_filter '/spec/'
 end
 
-require 'time_range/time_range'
+require 'time_period'
 require 'active_support/core_ext'
 Time.zone ||= 'UTC'
 
