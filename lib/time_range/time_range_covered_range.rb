@@ -1,4 +1,3 @@
-require_relative 'time_range'
 class TimeRange
   class CoveredRange
     def initialize(time_ranges)
