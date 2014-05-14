@@ -121,3 +121,8 @@ end
 
 ## Does `TimeFrame` inherit from `Range`?
 No. Ruby's `Range` class is multi-purpose, it can hold contiuous values (like floats), as well as discrete values (like integers) and behaves differently according to their type. Instance methods like `#each` or `#size` just don't make sense for time values, the same is true for all methods provided by the `Enumerable` mixin.
+
+
+## License
+
+[MIT](http://opensource.org/licenses/MIT).
