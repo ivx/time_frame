@@ -7,7 +7,7 @@ require 'time_frame/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'time_frame'
-  spec.version       = VERSION
+  spec.version       = TimeFrame::VERSION
   spec.authors       = ['Patrick Derichs', 'Bernhard Stoecker', 'Jan Zernisch']
   spec.email         = [
     'patrick.derichs@invision.de',
