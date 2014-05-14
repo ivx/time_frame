@@ -1,12 +1,10 @@
-# Service class for TimeFrame.
-#
-# traverses all intersections of in the cross product of two arrays of
-# time_frames and yields the block for each pair (linear runtime)
-#
-# NOTE:
-# * requires each of the arrays to consist of pairwise disjoint elements
-# * requires each of the arrays to be sorted
 class TimeFrame
+  # Traverses all intersections of in the cross product of two arrays of
+  # time_frames and yields the block for each pair (linear runtime)
+  #
+  # NOTE:
+  # * requires each of the arrays to consist of pairwise disjoint elements
+  # * requires each of the arrays to be sorted
   class Overlaps
     def initialize(array1, array2)
       @array1 = array1.dup

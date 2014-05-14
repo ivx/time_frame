@@ -1,4 +1,5 @@
 class TimeFrame
+  # Getting the covering time frame from a bunch of time_frame's.
   class CoveredFrame
     def initialize(time_frames)
       @time_frames = time_frames

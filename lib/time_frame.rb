@@ -7,6 +7,8 @@ require 'time_frame/time_frame_covered'
 require 'time_frame/time_frame_overlaps'
 require 'time_frame/time_frame_uniter'
 
+# The time frame class provides an specialized and enhanced frame for Time
+# values.
 class TimeFrame
   include Splitter
   attr_reader :min, :max
@@ -63,7 +65,7 @@ class TimeFrame
     end
   end
 
-  # Is true if the interior intersect
+  # Returns true if the interior intersect.
   def overlaps?(other)
     other.max > min && other.min < max
   end

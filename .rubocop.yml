@@ -1,2 +1,12 @@
 AllCops:
   Exclude: []
+
+# Setting the line length to a maximum of 80 chars.
+LineLength:
+  Enabled: true
+  Max: 80
+
+# Disabling the regex checks for now, since it fails with some generated gemspec
+# lines.
+RegexpLiteral:
+  Enabled: false
