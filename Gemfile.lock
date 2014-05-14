@@ -2,7 +2,6 @@ PATH
   remote: .
   specs:
     time_frame (0.0.0)
-      powerpack
 
 GEM
   remote: https://rubygems.org/
