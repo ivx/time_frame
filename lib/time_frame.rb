@@ -1,11 +1,13 @@
 require 'active_support/core_ext'
+# avoid i18n deprecation warning
+I18n.enforce_available_locales = false
 
-require 'time_range/time_range_splitter'
-require 'time_range/time_range_covered_range'
-require 'time_range/time_range_overlaps'
-require 'time_range/time_range_uniter'
+require 'time_frame/time_frame_splitter'
+require 'time_frame/time_frame_covered'
+require 'time_frame/time_frame_overlaps'
+require 'time_frame/time_frame_uniter'
 
-class TimeRange
+class TimeFrame
   include Splitter
   attr_reader :min, :max
 
@@ -50,14 +52,14 @@ class TimeRange
     min == max
   end
 
-  def self.union(time_ranges, options = {})
-    Uniter.new(time_ranges, options).unite
+  def self.union(time_frames, options = {})
+    Uniter.new(time_frames, options).unite
   end
 
-  def self.intersection(time_ranges)
-    time_ranges.reduce(time_ranges.first) do |intersection, time_range|
+  def self.intersection(time_frames)
+    time_frames.reduce(time_frames.first) do |intersection, time_frame|
       return unless intersection
-      intersection & time_range
+      intersection & time_frame
     end
   end
 
@@ -69,33 +71,33 @@ class TimeRange
   def &(other)
     new_min = [min, other.min].max
     new_max = [max, other.max].min
-    TimeRange.new(min: new_min, max: new_max) if new_min <= new_max
+    TimeFrame.new(min: new_min, max: new_max) if new_min <= new_max
   end
 
   def shift_by(duration)
-    TimeRange.new(min: @min + duration, duration: self.duration)
+    TimeFrame.new(min: @min + duration, duration: self.duration)
   end
 
   def shift_to(time)
-    TimeRange.new(min: time, duration: duration)
+    TimeFrame.new(min: time, duration: duration)
   end
 
   def without(*args)
-    ranges = args.select { |range| overlaps?(range) }
-    ranges = TimeRange.union(ranges)
+    frames = args.select { |frame| overlaps?(frame) }
+    frames = TimeFrame.union(frames)
 
-    ranges.reduce([self]) do |result, range_to_exclude|
-      last_range = result.pop
-      result + last_range.without_range(range_to_exclude)
+    frames.reduce([self]) do |result, frame_to_exclude|
+      last_frame = result.pop
+      result + last_frame.without_frame(frame_to_exclude)
     end
   end
 
-  def self.covering_time_range_for(time_ranges)
-    CoveredRange.new(time_ranges).range
+  def self.covering_time_frame_for(time_frames)
+    CoveredFrame.new(time_frames).frame
   end
 
-  def self.each_overlap(ranges1, ranges2)
-    Overlaps.new(ranges1, ranges2).each do |first, second|
+  def self.each_overlap(frames1, frames2)
+    Overlaps.new(frames1, frames2).each do |first, second|
       yield(first, second)
     end
   end
@@ -106,7 +108,7 @@ class TimeRange
 
   protected
 
-  def without_range(other)
+  def without_frame(other)
     intersection = self & other
     # this case is never used up to now (15.03.2013),
     # since without selects the values correctly
@@ -114,10 +116,10 @@ class TimeRange
 
     result = []
     if intersection.min > min
-      result << TimeRange.new(min: min, max: intersection.min)
+      result << TimeFrame.new(min: min, max: intersection.min)
     end
     if intersection.max < max
-      result << TimeRange.new(min: intersection.max, max: max)
+      result << TimeFrame.new(min: intersection.max, max: max)
     end
     result
   end

@@ -4,10 +4,10 @@ require 'english'
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
-require 'time_range/version'
+require 'time_frame/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'time_range'
+  spec.name          = 'time_frame'
   spec.version       = VERSION
   spec.authors       = ['Patrick Derichs', 'Bernhard Stoecker', 'Jan Zernisch']
   spec.email         = [
@@ -15,9 +15,9 @@ Gem::Specification.new do |spec|
     'bernhard.stoecker@invision.de',
     'jan.zernisch@invision.de'
   ]
-  spec.description   = %q(TimeRange)
+  spec.description   = %q(TimeFrame)
   spec.summary       =
-    %q(offers a specified range object for Time, Date or DateTime objects)
+    %q(offers a specified frame object for Time, Date or DateTime objects)
   spec.homepage      = 'http://www.invision.de'
   spec.license       = 'MIT'
 

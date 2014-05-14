@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    time_range (0.0.0)
+    time_frame (0.0.0)
       powerpack
 
 GEM
@@ -84,4 +84,4 @@ DEPENDENCIES
   rspec
   rubocop
   simplecov
-  time_range!
+  time_frame!
