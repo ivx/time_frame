@@ -4,6 +4,10 @@
 
 The time range class provides an specialized and enhanced range for time values.
 
+## Installation
+
+`gem install time_frame`
+
 ## Usage
 
 You can create a `TimeRange` instance by specifying `min` and `max`
