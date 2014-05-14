@@ -1,3 +1,5 @@
+require 'english'
+
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
@@ -7,13 +9,18 @@ Gem::Specification.new do |spec|
   spec.name          = 'time_range'
   spec.version       = VERSION
   spec.authors       = ['Patrick Derichs', 'Bernhard Stoecker', 'Jan Zernisch']
-  spec.email         = ['FT-Plan@injixo.com']
-  spec.description   = %q{TimeRange}
-  spec.summary       = %q{offers a specified range object for Time, Date or DateTime objects }
+  spec.email         = [
+    'patrick.derichs@invision.de',
+    'bernhard.stoecker@invision.de',
+    'jan.zernisch@invision.de'
+  ]
+  spec.description   = %q(TimeRange)
+  spec.summary       =
+    %q(offers a specified range object for Time, Date or DateTime objects)
   spec.homepage      = 'http://www.invision.de'
   spec.license       = ''
 
-  spec.files         = Dir['lib/time_period.rb', 'lib/time_range/version.rb']
+  spec.files         = `git ls-files`.split($INPUT_RECORD_SEPARATOR)
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
