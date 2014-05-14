@@ -7,6 +7,8 @@ require 'time_frame/time_frame_covered'
 require 'time_frame/time_frame_overlaps'
 require 'time_frame/time_frame_uniter'
 
+require 'time_frame/version'
+
 class TimeFrame
   include Splitter
   attr_reader :min, :max

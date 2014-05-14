@@ -1,6 +1,5 @@
 require 'english'
 
-# coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
@@ -16,9 +15,8 @@ Gem::Specification.new do |spec|
     'jan.zernisch@invision.de'
   ]
   spec.description   = %q(TimeFrame)
-  spec.summary       =
-    %q(offers a specified frame object for Time, Date or DateTime objects)
-  spec.homepage      = 'http://www.invision.de'
+  spec.summary       = %q(Ruby gem that offers support for time frames)
+  spec.homepage      = 'https://github.com/injixo/time_frame'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files`.split($INPUT_RECORD_SEPARATOR)
