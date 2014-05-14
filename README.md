@@ -25,6 +25,10 @@ time_frame = TimeFrame.new(min: Time.now, duration: 1.day)
 Let's play around a bit:
 
 ```ruby
+# Using pp in some samples to beautify output:
+require 'pp'
+# => true
+
 # Create a time frame instance from today with duration of 1 day
 time_frame = TimeFrame.new(min: Time.now, duration: 1.day)
 # => 2014-05-07 14:58:47 +0200..2014-05-08 14:58:47 +0200
@@ -72,23 +76,21 @@ time_frame.overlaps?(other_frame)
 
 # Time frame without another time frame:
 time_frame = TimeFrame.new(min: Time.new(2014, 5, 12), duration: 1.day)
-# => 2014-05-12 00:00:00 +0200..2014-05-13 00:00:00 +0200
 other = TimeFrame.new(min: Time.new(2014, 5, 12, 19), duration: 10.minutes)
-# => 2014-05-12 19:00:00 +0200..2014-05-12 19:10:00 +0200
-time_frame.without(other)
-# => [2014-05-12 00:00:00 +0200..2014-05-12 19:00:00 +0200, 2014-05-12 19:10:00 +0200..2014-05-13 00:00:00 +0200]
-another = other.shift_by(15.minutes)
-# => 2014-05-12 19:15:00 +0200..2014-05-12 19:25:00 +0200
+pp time_frame.without(other)
+# [2014-05-12 00:00:00 +0200..2014-05-12 19:00:00 +0200,
+#  2014-05-12 19:10:00 +0200..2014-05-13 00:00:00 +0200]
 
 # You can also use without with many TimeFrame's:
-time_frame.without(other, another)
-# => [2014-05-12 00:00:00 +0200..2014-05-12 19:00:00 +0200, 2014-05-12 19:10:00 +0200..2014-05-12 19:15:00 +0200, 2014-05-12 19:25:00 +0200..2014-05-13 00:00:00 +0200]
+another = other.shift_by(15.minutes)
+pp time_frame.without(other, another)
+# [2014-05-12 00:00:00 +0200..2014-05-12 19:00:00 +0200,
+#  2014-05-12 19:10:00 +0200..2014-05-12 19:15:00 +0200,
+#  2014-05-12 19:25:00 +0200..2014-05-13 00:00:00 +0200]
 
 # Use of the mathematical &. The intersection is returned:
 time_frame = TimeFrame.new(min: Time.new(2014), duration: 1.day)
-# => 2014-01-01 00:00:00 +0100..2014-01-02 00:00:00 +0100
 other_time_frame = time_frame.shift_by(12.hours)
-# => 2014-01-01 12:00:00 +0100..2014-01-02 12:00:00 +0100
 time_frame & other_time_frame
 # => 2014-01-01 12:00:00 +0100..2014-01-02 00:00:00 +0100
 
