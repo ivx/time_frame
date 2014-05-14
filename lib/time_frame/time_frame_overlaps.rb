@@ -1,12 +1,12 @@
-# Service class for TimeRange.
+# Service class for TimeFrame.
 #
 # traverses all intersections of in the cross product of two arrays of
-# time_ranges and yields the block for each pair (linear runtime)
+# time_frames and yields the block for each pair (linear runtime)
 #
 # NOTE:
 # * requires each of the arrays to consist of pairwise disjoint elements
 # * requires each of the arrays to be sorted
-class TimeRange
+class TimeFrame
   class Overlaps
     def initialize(array1, array2)
       @array1 = array1.dup
@@ -42,8 +42,8 @@ class TimeRange
     end
 
     def current_items_overlapping?
-      time_range = @array1.first & @array2.first
-      time_range && time_range.duration > 0
+      time_frame = @array1.first & @array2.first
+      time_frame && time_frame.duration > 0
     end
   end
 end
