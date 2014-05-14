@@ -2,7 +2,7 @@
 
 ## Description
 
-The time range class provides an specialized and enhanced range for time values.
+The time frame class provides an specialized and enhanced frame for time values.
 
 ## Usage
 
@@ -21,7 +21,7 @@ time_frame = TimeFrame.new(min: Time.now, duration: 1.day)
 Let's play around a bit:
 
 ```ruby
-# Create a time range instance from today with duration of 1 day
+# Create a time frame instance from today with duration of 1 day
 time_frame = TimeFrame.new(min: Time.now, duration: 1.day)
 # => 2014-05-07 14:58:47 +0200..2014-05-08 14:58:47 +0200
 
@@ -29,7 +29,7 @@ time_frame = TimeFrame.new(min: Time.now, duration: 1.day)
 time_frame.duration
 # => 86400.0 seconds
 
-# Shift the whole time range by... let's say... 2 days!
+# Shift the whole time frame by... let's say... 2 days!
 later = time_frame.shift_by(2.days)
 # => 2014-05-09 14:58:47 +0200..2014-05-10 14:58:47 +0200
 
@@ -37,7 +37,7 @@ later = time_frame.shift_by(2.days)
 earlier = time_frame.shift_by(-2.days)
 # => 2014-05-05 14:58:47 +0200..2014-05-06 14:58:47 +0200
 
-# Is another time covered by our time range?
+# Is another time covered by our time frame?
 my_time = Time.new(2014, 5, 7, 16)
 time_frame.cover?(my_time)
 # => true
@@ -58,15 +58,15 @@ time_frame.deviation_of(time_frame.min + 20.minutes)
 time_frame.shift_to(Time.new(2016, 1, 1))
 # => 2016-01-01 00:00:00 +0100..2016-01-02 00:00:00 +0100
 
-# Checking whether another time range overlaps:
-other_range = TimeFrame.new(
+# Checking whether another time frame overlaps:
+other_frame = TimeFrame.new(
   min: time_frame.min - 3.days,
   max: time_frame.min + 40.minutes
 )
-time_frame.overlaps?(other_range)
+time_frame.overlaps?(other_frame)
 # => true
 
-# Time range without another time range:
+# Time frame without another time frame:
 time_frame = TimeFrame.new(min: Time.new(2014, 5, 12), duration: 1.day)
 # => 2014-05-12 00:00:00 +0200..2014-05-13 00:00:00 +0200
 other = TimeFrame.new(min: Time.new(2014, 5, 12, 19), duration: 10.minutes)
@@ -89,7 +89,7 @@ time_frame & other_time_frame
 
 ```
 
-These are the most common functionalities of the `TimeFrame` class, but there is quite more to discover. If you have an array of time ranges, you can compute their union and pairwise intersection using `TimeFrame.union` and `TimeFrame.intersection`. For two sorted arrays of time ranges, you can traverse all overlaps of time ranges in the first array with time ranges in the second array in **linear time** using `TimeFrame.each_overlap`.
+These are the most common functionalities of the `TimeFrame` class, but there is quite more to discover. If you have an array of time frames, you can compute their union and pairwise intersection using `TimeFrame.union` and `TimeFrame.intersection`. For two sorted arrays of time frames, you can traverse all overlaps of time frames in the first array with time frames in the second array in **linear time** using `TimeFrame.each_overlap`.
 
 ```ruby
 

@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
   ]
   spec.description   = %q(TimeFrame)
   spec.summary       =
-    %q(offers a specified range object for Time, Date or DateTime objects)
+    %q(offers a specified frame object for Time, Date or DateTime objects)
   spec.homepage      = 'http://www.invision.de'
   spec.license       = 'MIT'
 

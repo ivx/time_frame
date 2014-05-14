@@ -6,13 +6,13 @@ class TimeFrame
     end
 
     def unite
-      ranges = @sorted ? @time_frames : @time_frames.sort_by(&:min)
-      ranges.reduce([]) do |result, range|
-        last_range = result.last
-        if last_range && last_range.cover?(range.min)
-          result[-1] = TimeFrame.new(min: last_range.min, max: range.max)
+      frames = @sorted ? @time_frames : @time_frames.sort_by(&:min)
+      frames.reduce([]) do |result, frame|
+        last_frame = result.last
+        if last_frame && last_frame.cover?(frame.min)
+          result[-1] = TimeFrame.new(min: last_frame.min, max: frame.max)
         else
-          result << range
+          result << frame
         end
         result
       end
