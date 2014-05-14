@@ -1,5 +1,7 @@
 # TimeFrame
 
+[![Gem Version](https://badge.fury.io/rb/time_frame.svg)](http://badge.fury.io/rb/time_frame)
+
 ## Description
 
 The time frame class provides an specialized and enhanced range for time values.
