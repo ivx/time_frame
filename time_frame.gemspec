@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'english'
 
 lib = File.expand_path('../lib', __FILE__)
