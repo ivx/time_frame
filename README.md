@@ -1,6 +1,7 @@
 # TimeFrame
 
 [![Gem Version](https://badge.fury.io/rb/time_frame.svg)](http://badge.fury.io/rb/time_frame)
+[![Dependency Status](https://gemnasium.com/injixo/time_frame.svg)](https://gemnasium.com/injixo/time_frame)
 
 ## Description
 
