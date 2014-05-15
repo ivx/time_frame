@@ -4,10 +4,6 @@
 [![Dependency Status](https://gemnasium.com/injixo/time_frame.svg)](https://gemnasium.com/injixo/time_frame)
 [![Code Climate](https://codeclimate.com/github/injixo/time_frame.png)](https://codeclimate.com/github/injixo/time_frame)
 
-## Description
-
-The time frame class provides a specialized and enhanced range for time values.
-
 ## Installation
 
 `gem install time_frame`
