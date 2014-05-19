@@ -1,7 +1,6 @@
 # The time frame class provides an specialized and enhanced range for time
 # values.
 class TimeFrame
-  include Splitter
   attr_reader :min, :max
 
   def initialize(args)
@@ -83,6 +82,10 @@ class TimeFrame
       last_frame = result.pop
       result + last_frame.without_frame(frame_to_exclude)
     end
+  end
+
+  def split_by_interval(interval)
+    Splitter.new(self).split_by interval
   end
 
   def self.covering_time_frame_for(time_frames)

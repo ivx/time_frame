@@ -1,10 +1,14 @@
 class TimeFrame
   # Provides a method to split a time frame by a given interval. It returns
   # an array which contains the intervals as TimeFrame instances.
-  module Splitter
-    def split_by_interval(interval)
-      time = @min
-      max = @max
+  class Splitter
+    def initialize(time_frame)
+      @time_frame = time_frame
+    end
+
+    def split_by(interval)
+      time = @time_frame.min
+      max = @time_frame.max
       time_frames = []
       until time >= max
         time_old = time
