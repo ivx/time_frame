@@ -4,6 +4,11 @@ describe TimeFrame do
   let(:time) { Time.zone.local(2012) }
   let(:duration) { 2.hours }
 
+  before do
+    # Avoid i18n deprecation warning
+    I18n.enforce_available_locales = true
+  end
+
   describe '#initialize' do
     context 'when given two times' do
       context 'and min is smaller than max' do
