@@ -15,6 +15,7 @@ Gem::Specification.new do |spec|
     'bernhard.stoecker@invision.de',
     'jan.zernisch@invision.de'
   ]
+  spec.required_ruby_version = '>= 2.0.0'
   spec.description   = %q(TimeFrame)
   spec.summary       = %q(Ruby gem that offers support for time frames)
   spec.homepage      = 'https://github.com/injixo/time_frame'

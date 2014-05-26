@@ -1,3 +1,4 @@
+# Encoding: utf-8
 class TimeFrame
   # Creates a union of many time_frame's. You can request a sorted collection by
   # the min Time value.

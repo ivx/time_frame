@@ -1,3 +1,4 @@
+# Encoding: utf-8
 # The time frame class provides an specialized and enhanced range for time
 # values.
 class TimeFrame

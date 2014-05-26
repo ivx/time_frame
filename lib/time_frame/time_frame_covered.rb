@@ -1,3 +1,4 @@
+# Encoding: utf-8
 class TimeFrame
   # Getting the covering time frame from a bunch of time_frame's.
   class CoveredFrame
