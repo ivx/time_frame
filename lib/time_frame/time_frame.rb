@@ -31,7 +31,7 @@ class TimeFrame
   def deviation_of(item)
     case
     when item.respond_to?(:min) && item.respond_to?(:max)
-      [deviation_of(item.min), deviation_of(item.max)].min_by { |a| a.abs }
+      [deviation_of(item.min), deviation_of(item.max)].min_by(&:abs)
     when cover?(item)
       0
     when item < min
