@@ -107,9 +107,6 @@ class TimeFrame
 
   def without_frame(other)
     intersection = self & other
-    # this case is never used up to now (15.03.2013),
-    # since without selects the values correctly
-    return [self] unless intersection
 
     result = []
     if intersection.min > min
