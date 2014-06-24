@@ -40,7 +40,7 @@ class TimeFrame
     when cover?(item)
       0
     else
-      [(item - max).abs, (item - max).abs].min
+      [(item - min).abs, (item - max).abs].min
     end
   end
 
