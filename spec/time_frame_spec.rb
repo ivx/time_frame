@@ -10,7 +10,7 @@ describe TimeFrame do
     I18n.enforce_available_locales = true
   end
 
-  describe '#initialize' do
+  describe '#min and #max' do
     context 'when given two times' do
       context 'and min is smaller than max' do
         subject { TimeFrame.new(min: time, max: time + duration) }
@@ -95,6 +95,11 @@ describe TimeFrame do
         end
       end
     end
+
+    specify '#min and #max are nil if time frame is empty' do
+      expect(TimeFrame::EMPTY.min).to be_nil
+      expect(TimeFrame::EMPTY.max).to be_nil
+    end
   end
 
   describe '#duration' do
@@ -122,6 +127,9 @@ describe TimeFrame do
         end
       end
     end
+    it 'returns 0 when time frame is empty' do
+      expect(TimeFrame::EMPTY.duration).to eq 0
+    end
   end
 
   describe '#==' do
@@ -142,6 +150,19 @@ describe TimeFrame do
       let(:other) { TimeFrame.new(min: time, duration: 3.hours) }
       subject { frame == other }
       it { should be_false }
+    end
+    it 'returns true when self and the argument are both empty' do
+      expect(TimeFrame::EMPTY == TimeFrame::EMPTY).to be_true
+    end
+    it 'returns false if argument is empty, but self is not' do
+      expect(
+        TimeFrame::EMPTY == TimeFrame.new(min: time, duration: 3.hours)
+      ).to be_false
+    end
+    it 'returns false if self is empty, but argument is not' do
+      expect(
+        TimeFrame::EMPTY == TimeFrame.new(min: time, duration: 3.hours)
+      ).to be_false
     end
   end
 
@@ -233,6 +254,24 @@ describe TimeFrame do
         end
       end
     end
+    it 'returns true when argument is empty' do
+      expect(
+        TimeFrame.new(min: time, duration: 3.hours)
+      ).to cover(TimeFrame::EMPTY)
+    end
+    it 'returns true when self and argument are both empty' do
+      expect(TimeFrame::EMPTY).to cover(TimeFrame::EMPTY)
+    end
+    it 'returns false when only self is empty' do
+      expect(
+        TimeFrame::EMPTY
+      ).not_to cover(TimeFrame.new(min: time, duration: 3.hours))
+    end
+    it 'returns true when only the argument is empty' do
+      expect(
+        TimeFrame.new(min: time, duration: 3.hours)
+      ).to cover(TimeFrame::EMPTY)
+    end
   end
 
   describe '#deviation_of' do
@@ -302,6 +341,15 @@ describe TimeFrame do
           it { should eq 42.seconds }
         end
       end
+      it 'returns Float::INFINITY when only argument is empty' do
+        expect(time_frame.deviation_of(TimeFrame::EMPTY)).to eq Float::INFINITY
+      end
+      it 'returns Float::INFINITY when only self is empty' do
+        expect(TimeFrame::EMPTY.deviation_of(time_frame)).to eq Float::INFINITY
+      end
+      it 'returns 0 when self and argument are both empty' do
+        expect(TimeFrame::EMPTY.deviation_of(TimeFrame::EMPTY)).to eq 0
+      end
     end
   end
 
@@ -352,14 +400,12 @@ describe TimeFrame do
   end
 
   describe '#empty?' do
-    context 'when min equals max' do
-      subject { TimeFrame.new(min: time, max: time) }
-      it { should be_empty }
+    it 'returns false when self is not contains at least one point' do
+      expect(TimeFrame.new(min: time, max: time)).not_to be_empty
     end
 
-    context 'when max is greater than min' do
-      subject { TimeFrame.new(min: time, duration: 1.day) }
-      it { should_not be_empty }
+    it 'returns true when self is empty' do
+      expect(TimeFrame::EMPTY).to be_empty
     end
   end
 
@@ -458,6 +504,10 @@ describe TimeFrame do
         end
       end
     end
+
+    it 'ignores any empty time frames' do
+      expect(TimeFrame.union([TimeFrame::EMPTY, TimeFrame::EMPTY])).to eq []
+    end
   end
 
   describe '.intersection' do
@@ -468,11 +518,11 @@ describe TimeFrame do
       expect(TimeFrame.intersection([frame1, frame2, frame3]))
         .to eq TimeFrame.new(min: Time.zone.local(2012), duration: 1.day)
     end
-    it 'returns nil if the intersection is empty' do
+    it 'is empty if the intersection is empty' do
       frame1 = TimeFrame.new(min: Time.zone.local(2012), duration: 1.days)
       frame2 = frame1.shift_by(-2.day)
       frame3 = frame1.shift_by(-4.days)
-      expect(TimeFrame.intersection([frame1, frame2, frame3])).to be_nil
+      expect(TimeFrame.intersection([frame1, frame2, frame3])).to be_empty
     end
   end
 
@@ -531,6 +581,34 @@ describe TimeFrame do
         it { should be_false }
       end
     end
+    it 'returns false when self contains only one point' do
+      singleton_time_frame = TimeFrame.new(min: time, max: time)
+      time_frame = TimeFrame.new(min: time, duration: 1.hour)
+      expect(singleton_time_frame.overlaps?(time_frame)).to be_false
+      expect(singleton_time_frame.overlaps?(singleton_time_frame)).to be_false
+      expect(singleton_time_frame.overlaps?(TimeFrame::EMPTY)).to be_false
+    end
+    it 'returns false when self is empty' do
+      singleton_time_frame = TimeFrame.new(min: time, max: time)
+      time_frame = TimeFrame.new(min: time, duration: 1.hour)
+      expect(TimeFrame::EMPTY.overlaps?(time_frame)).to be_false
+      expect(TimeFrame::EMPTY.overlaps?(singleton_time_frame)).to be_false
+      expect(TimeFrame::EMPTY.overlaps?(TimeFrame::EMPTY)).to be_false
+    end
+    it 'returns false when other contains only one point' do
+      singleton_time_frame = TimeFrame.new(min: time, max: time)
+      time_frame = TimeFrame.new(min: time, duration: 1.hour)
+      expect(time_frame.overlaps?(singleton_time_frame)).to be_false
+      expect(singleton_time_frame.overlaps?(singleton_time_frame)).to be_false
+      expect(TimeFrame::EMPTY.overlaps?(singleton_time_frame)).to be_false
+    end
+    it 'returns false when other is empty' do
+      singleton_time_frame = TimeFrame.new(min: time, max: time)
+      time_frame = TimeFrame.new(min: time, duration: 1.hour)
+      expect(time_frame.overlaps?(TimeFrame::EMPTY)).to be_false
+      expect(singleton_time_frame.overlaps?(TimeFrame::EMPTY)).to be_false
+      expect(TimeFrame::EMPTY.overlaps?(TimeFrame::EMPTY)).to be_false
+    end
   end
 
   describe '#&' do
@@ -558,7 +636,7 @@ describe TimeFrame do
       context 'and they are disjoint' do
         let(:other) { frame.shift_by(frame.duration + 1.hour) }
         subject { frame & other }
-        it { should be_nil }
+        it { should be_empty }
       end
       context 'and they are overlapping' do
         let(:other) { frame.shift_by(1.hour) }
@@ -575,7 +653,7 @@ describe TimeFrame do
       context 'and they are disjoint' do
         let(:other) { frame.shift_by(-frame.duration - 1.hour) }
         subject { frame & other }
-        it { should be_nil }
+        it { should be_empty }
       end
       context 'and they are overlapping' do
         let(:other) { frame.shift_by(-1.hour) }
@@ -587,6 +665,13 @@ describe TimeFrame do
         subject { frame & other }
         it { should eq TimeFrame.new(min: frame.min, max: frame.min) }
       end
+    end
+    it 'is empty time frame when self it empty' do
+      expect(TimeFrame::EMPTY & frame).to eq TimeFrame::EMPTY
+      expect(TimeFrame::EMPTY & TimeFrame::EMPTY).to eq TimeFrame::EMPTY
+    end
+    it 'is empty time frame when self it not empty and the argument is empty' do
+      expect(frame & TimeFrame::EMPTY).to eq TimeFrame::EMPTY
     end
   end
 
@@ -637,6 +722,10 @@ describe TimeFrame do
         expected = TimeFrame.new(min: time + 7.days, duration: 12.hours)
         expect(subject[7]).to eq expected
       end
+    end
+
+    it 'returns an empty array when self is empty' do
+      TimeFrame::EMPTY.split_by_interval(1.day).should eq []
     end
   end
 
@@ -700,6 +789,9 @@ describe TimeFrame do
       end
       it { should_not equal frame }
     end
+    it 'raises a TypeError when time frame is empty' do
+      expect { TimeFrame::EMPTY.shift_by(1.day) }.to raise_error TypeError
+    end
   end
 
   describe '#shift_to' do
@@ -756,212 +848,140 @@ describe TimeFrame do
         it { should eq destination + duration }
       end
     end
+
+    it 'raises a TypeError when time frame is empty' do
+      expect {
+        TimeFrame::EMPTY.shift_to(Time.zone.local(2012, 1, 2))
+      }.to raise_error TypeError
+    end
   end
 
   describe '#without' do
-    context 'when providing a single frame' do
-      let(:frame) { TimeFrame.new(min: time, duration: 1.hour) }
-
-      context 'and other is left of self' do
-        context 'and they have a common border' do
-          let(:other) { frame.shift_by(-frame.duration) }
-          subject { frame.without(other) }
-          it { should eq [frame] }
+    let(:frame) { TimeFrame.new(min: time, duration: 10.hours) }
+    context 'when the arguments do not intersect' do
+      context 'and do not touch the boundaries' do
+        let(:arg) do
+          shift = frame.duration + 1.hour
+          [
+            TimeFrame.new(min: time - 2.hours, duration: 1.hour),
+            TimeFrame.new(min: time + shift, duration: 1.hour)
+          ]
         end
-        context 'and they do not have a common border' do
-          let(:other) { frame.shift_by(-2 * frame.duration) }
-          subject { frame.without(other) }
-          it { should eq [frame] }
-        end
-        context 'and they overlap' do
-          let(:other) { frame.shift_by(-0.5 * frame.duration) }
-          subject { frame.without(other) }
-          it { should eq [TimeFrame.new(min: other.max, max: frame.max)] }
-        end
+        subject { frame.without(*arg) }
+        it { should eq [frame] }
       end
-
-      context 'and other is right of self' do
-        context 'and they have a common border' do
-          let(:other) { frame.shift_by(frame.duration) }
-          subject { frame.without(other) }
-          it { should eq [frame] }
+      context 'and they touch boundaries' do
+        let(:arg) do
+          [
+            TimeFrame.new(min: time - 1.hour, duration: 1.hour),
+            TimeFrame.new(min: time + frame.duration, duration: 1.hour)
+          ]
         end
-        context 'and they do not have a common border' do
-          let(:other) { frame.shift_by(2 * frame.duration) }
-          subject { frame.without(other) }
-          it { should eq [frame] }
-        end
-        context 'and they overlap' do
-          let(:other) { frame.shift_by(0.5 * frame.duration) }
-          subject { frame.without(other) }
-          it { should eq [TimeFrame.new(min: frame.min, max: other.min)] }
-        end
+        subject { frame.without(*arg) }
+        it { should eq [frame] }
       end
-
-      context 'and other is contained within self' do
-        context 'and other is equal to self' do
-          subject { frame.without(frame) }
-          it { should eq [] }
+    end
+    context 'when the arguments intersect' do
+      context 'and the argument frames overlaps themself' do
+        let(:arg) do
+          [
+            TimeFrame.new(min: time + 1.hour, duration: 2.hours),
+            TimeFrame.new(min: time + 2.hours, duration: 2.hours)
+          ]
         end
-        context 'and only left boundaries are equal' do
-          let(:other) do
-            TimeFrame.new(min: time, duration: frame.duration / 2)
-          end
-          subject { frame.without(other) }
-          it { should eq [TimeFrame.new(min: other.max, max: frame.max)] }
+        let(:expected) do
+          [
+            TimeFrame.new(min: frame.min, duration: 1.hour),
+            TimeFrame.new(min: time + 4.hours, max: frame.max)
+          ]
         end
-        context 'and only right boundaries are equal' do
-          let(:other) do
-            TimeFrame.new(min: time + frame.duration / 2, max: frame.max)
-          end
-          subject { frame.without(other) }
-          it { should eq [TimeFrame.new(min: frame.min, max: other.min)] }
+        subject { frame.without(*arg) }
+        it { should eq expected }
+      end
+      context 'and they cover self' do
+        let(:arg) do
+          duration = 0.5 * frame.duration
+          [
+            TimeFrame.new(min: time, duration: duration),
+            TimeFrame.new(min: time + duration, duration: duration)
+          ]
         end
-        context 'and they have no boundary in common' do
-          let(:other) do
-            TimeFrame.new(min: time + frame.duration / 3,
-                          duration: frame.duration / 3)
-          end
-          subject { frame.without(other) }
-          it do
-            should eq [
-              TimeFrame.new(min: frame.min, max: other.min),
-              TimeFrame.new(min: other.max, max: frame.max)
+        subject { frame.without(*arg) }
+        it { should eq [] }
+      end
+      context 'and they overlap at the boundaries' do
+        let(:arg) do
+          shift = frame.duration - 1.hour
+          [
+            TimeFrame.new(min: time - 1.hour, duration: 2.hour),
+            TimeFrame.new(min: time + shift, duration: 2.hour)
+          ]
+        end
+        let(:expected) do
+          [
+            TimeFrame.new(min: frame.min + 1.hour,
+                          max: frame.max - 1.hour)
+          ]
+        end
+        subject { frame.without(*arg) }
+        it { should eq expected }
+      end
+      context 'and we have three frames in args overlaped by self' do
+        context 'which are sorted' do
+          let(:arg) do
+            [
+              TimeFrame.new(min: time + 1.hour, duration: 2.hour),
+              TimeFrame.new(min: time + 4.hours, duration: 2.hour),
+              TimeFrame.new(min: time + 7.hours, duration: 2.hour)
             ]
           end
+          let(:expected) do
+            [
+              TimeFrame.new(min: time, max: time + 1.hour),
+              TimeFrame.new(min: time + 3.hours, max: time + 4.hour),
+              TimeFrame.new(min: time + 6.hours, max: time + 7.hours),
+              TimeFrame.new(min: time + 9.hours, max: time + 10.hours)
+            ]
+          end
+          subject { frame.without(*arg) }
+          it { should eq expected }
+        end
+        context 'and they are unsorted' do
+          let(:arg) do
+            [
+              TimeFrame.new(min: time + 4.hours, duration: 2.hour),
+              TimeFrame.new(min: time + 1.hour, duration: 2.hour),
+              TimeFrame.new(min: time + 7.hours, duration: 2.hour)
+            ]
+          end
+          let(:expected) do
+            [
+              TimeFrame.new(min: time, max: time + 1.hour),
+              TimeFrame.new(min: time + 3.hours, max: time + 4.hour),
+              TimeFrame.new(min: time + 6.hours, max: time + 7.hours),
+              TimeFrame.new(min: time + 9.hours, max: time + 10.hours)
+            ]
+          end
+          subject { frame.without(*arg) }
+          it { should eq expected }
         end
       end
     end
 
-    context 'when providing an array' do
-      let(:frame) { TimeFrame.new(min: time, duration: 10.hours) }
-      context 'and providing one frame' do
-        context 'and its equal to self' do
-          let(:arg) { [frame] }
-          subject { frame.without(*arg) }
-          it { should eq [] }
-        end
-      end
-      context 'and providing several frames' do
-        context 'and they do not intersect' do
-          context 'and do not touch the boundaries' do
-            let(:arg) do
-              shift = frame.duration + 1.hour
-              [
-                TimeFrame.new(min: time - 2.hours, duration: 1.hour),
-                TimeFrame.new(min: time + shift, duration: 1.hour)
-              ]
-            end
-            subject { frame.without(*arg) }
-            it { should eq [frame] }
-          end
-          context 'and they touch boundaries' do
-            let(:arg) do
-              [
-                TimeFrame.new(min: time - 1.hour, duration: 1.hour),
-                TimeFrame.new(min: time + frame.duration, duration: 1.hour)
-              ]
-            end
-            subject { frame.without(*arg) }
-            it { should eq [frame] }
-          end
-        end
-        context 'and they intersect' do
-          context 'and the argument frames overlaps themself' do
-            let(:arg) do
-              [
-                TimeFrame.new(min: time + 1.hour, duration: 2.hours),
-                TimeFrame.new(min: time + 2.hours, duration: 2.hours)
-              ]
-            end
-            let(:expected) do
-              [
-                TimeFrame.new(min: frame.min, duration: 1.hour),
-                TimeFrame.new(min: time + 4.hours, max: frame.max)
-              ]
-            end
-            subject { frame.without(*arg) }
-            it { should eq expected }
-          end
-          context 'and they cover self' do
-            let(:arg) do
-              duration = 0.5 * frame.duration
-              [
-                TimeFrame.new(min: time, duration: duration),
-                TimeFrame.new(min: time + duration, duration: duration)
-              ]
-            end
-            subject { frame.without(*arg) }
-            it { should eq [] }
-          end
-          context 'and they overlap at the boundaries' do
-            let(:arg) do
-              shift = frame.duration - 1.hour
-              [
-                TimeFrame.new(min: time - 1.hour, duration: 2.hour),
-                TimeFrame.new(min: time + shift, duration: 2.hour)
-              ]
-            end
-            let(:expected) do
-              [
-                TimeFrame.new(min: frame.min + 1.hour,
-                              max: frame.max - 1.hour)
-              ]
-            end
-            subject { frame.without(*arg) }
-            it { should eq expected }
-          end
-          context 'and we have three frames in args overlaped by self' do
-            context 'which are sorted' do
-              let(:arg) do
-                [
-                  TimeFrame.new(min: time + 1.hour, duration: 2.hour),
-                  TimeFrame.new(min: time + 4.hours, duration: 2.hour),
-                  TimeFrame.new(min: time + 7.hours, duration: 2.hour)
-                ]
-              end
-              let(:expected) do
-                [
-                  TimeFrame.new(min: time, max: time + 1.hour),
-                  TimeFrame.new(min: time + 3.hours, max: time + 4.hour),
-                  TimeFrame.new(min: time + 6.hours, max: time + 7.hours),
-                  TimeFrame.new(min: time + 9.hours, max: time + 10.hours)
-                ]
-              end
-              subject { frame.without(*arg) }
-              it { should eq expected }
-            end
-            context 'and they are unsorted' do
-              let(:arg) do
-                [
-                  TimeFrame.new(min: time + 4.hours, duration: 2.hour),
-                  TimeFrame.new(min: time + 1.hour, duration: 2.hour),
-                  TimeFrame.new(min: time + 7.hours, duration: 2.hour)
-                ]
-              end
-              let(:expected) do
-                [
-                  TimeFrame.new(min: time, max: time + 1.hour),
-                  TimeFrame.new(min: time + 3.hours, max: time + 4.hour),
-                  TimeFrame.new(min: time + 6.hours, max: time + 7.hours),
-                  TimeFrame.new(min: time + 9.hours, max: time + 10.hours)
-                ]
-              end
-              subject { frame.without(*arg) }
-              it { should eq expected }
-            end
-          end
-        end
-      end
+    it 'returns self (as a singleton array) if there are no arguments' do
+      expect(frame.without()).to eq [frame]
+    end
+
+    it 'returns an empty array if self is empty' do
+      expect(TimeFrame::EMPTY.without(frame)).to eq []
+    end
+
+    it 'ignores empty time ranges within the arguments' do
+      expect(frame.without(TimeFrame::EMPTY)).to eq [frame]
     end
   end
 
   describe '.covering_time_frame_for' do
-
-    context 'for an empty array' do
-      subject { TimeFrame.covering_time_frame_for([]) }
-      it { should be_nil }
-    end
 
     context 'for a single time frame' do
       let(:frame) { TimeFrame.new(min: time, duration: 1.hour) }
@@ -986,6 +1006,17 @@ describe TimeFrame do
         subject { super().max }
         it { should eq frame3.max }
       end
+    end
+
+    it 'returns the empty time frame if the array is empty' do
+      expect(TimeFrame.covering_time_frame_for([])).to eq TimeFrame::EMPTY
+    end
+
+    it 'ignores empty time frames' do
+      time_frame = TimeFrame.new(min: time, duration: 2.hours)
+      expect(
+        TimeFrame.covering_time_frame_for([time_frame, TimeFrame::EMPTY])
+      ).to eq time_frame
     end
   end
 
@@ -1012,7 +1043,8 @@ describe TimeFrame do
         TimeFrame.new(min: time + 2.hours, max: time + 5.hour),
         TimeFrame.new(min: time + 6.hour, max: time + 7.hours),
         TimeFrame.new(min: time + 8.hours, max: time + 9.hours),
-        TimeFrame.new(min: time + 10.hours, max: time + 11.hours)
+        TimeFrame.new(min: time + 10.hours, max: time + 11.hours),
+        TimeFrame::EMPTY
       ]
     end
 
@@ -1076,6 +1108,10 @@ describe TimeFrame do
       tr = TimeFrame.new(min: min, duration: 10.minutes)
       actual = tr.inspect
       expect(actual).to eq expected
+    end
+
+    it 'is overridden for empty time frames' do
+      expect(TimeFrame::EMPTY.inspect).to eq 'EMPTY'
     end
   end
 end

@@ -4,6 +4,8 @@
 class TimeFrame
   attr_reader :min, :max
 
+  EMPTY = Empty.instance
+
   def initialize(args)
     min = args.fetch(:min)
     max = args.fetch(:max, nil) || min + args.fetch(:duration)
@@ -23,15 +25,20 @@ class TimeFrame
 
   def cover?(element)
     if element.respond_to?(:min) && element.respond_to?(:max)
-      return min <= element.min && element.max <= max
+      element.empty? || min <= element.min && element.max <= max
+    else
+      min <= element && element <= max
     end
-    min <= element && element <= max
   end
 
   def deviation_of(item)
     case
     when item.respond_to?(:min) && item.respond_to?(:max)
-      [deviation_of(item.min), deviation_of(item.max)].min_by(&:abs)
+      if item.empty?
+        Float::INFINITY
+      else
+        [deviation_of(item.min), deviation_of(item.max)].min_by(&:abs)
+      end
     when cover?(item)
       0
     when item < min
@@ -42,7 +49,7 @@ class TimeFrame
   end
 
   def empty?
-    min == max
+    false
   end
 
   def self.union(time_frames, options = {})
@@ -51,20 +58,25 @@ class TimeFrame
 
   def self.intersection(time_frames)
     time_frames.reduce(time_frames.first) do |intersection, time_frame|
-      return unless intersection
       intersection & time_frame
     end
   end
 
   # Returns true if the interior intersect.
   def overlaps?(other)
+    return false if other.duration == 0
     other.max > min && other.min < max
   end
 
   def &(other)
+    return EMPTY if other.empty?
     new_min = [min, other.min].max
     new_max = [max, other.max].min
-    TimeFrame.new(min: new_min, max: new_max) if new_min <= new_max
+    if new_min <= new_max
+      TimeFrame.new(min: new_min, max: new_max)
+    else
+      EMPTY
+    end
   end
 
   def shift_by(duration)
