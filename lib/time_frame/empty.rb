@@ -1,4 +1,5 @@
 class TimeFrame
+  # Singleton class for the empty time frame object
   class Empty < TimeFrame
     include Singleton
 
@@ -18,27 +19,27 @@ class TimeFrame
       element == EMPTY ? 0 : Float::INFINITY
     end
 
-    def &(other)
+    def &(_other)
       self
     end
 
-    def overlaps?(other)
+    def overlaps?(_)
       false
     end
 
-    def split_by_interval(interval)
+    def split_by_interval(_)
       []
     end
 
-    def shift_by(interval)
-      fail TypeError.new('can\'t shift empty time frame')
+    def shift_by(_)
+      fail TypeError, 'can\'t shift empty time frame'
     end
 
-    def shift_to(time)
-      fail TypeError.new('can\'t shift empty time frame')
+    def shift_to(_)
+      fail TypeError, 'can\'t shift empty time frame'
     end
 
-    def without(*args)
+    def without(*_)
       []
     end
 

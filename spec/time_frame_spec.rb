@@ -152,17 +152,17 @@ describe TimeFrame do
       it { should be_false }
     end
     it 'returns true when self and the argument are both empty' do
-      expect(TimeFrame::EMPTY == TimeFrame::EMPTY).to be_true
+      expect(TimeFrame::EMPTY).to eq TimeFrame::EMPTY
     end
     it 'returns false if argument is empty, but self is not' do
       expect(
-        TimeFrame::EMPTY == TimeFrame.new(min: time, duration: 3.hours)
-      ).to be_false
+        TimeFrame.new(min: time, duration: 3.hours)
+      ).not_to eq TimeFrame::EMPTY
     end
     it 'returns false if self is empty, but argument is not' do
       expect(
-        TimeFrame::EMPTY == TimeFrame.new(min: time, duration: 3.hours)
-      ).to be_false
+        TimeFrame::EMPTY
+      ).not_to eq TimeFrame.new(min: time, duration: 3.hours)
     end
   end
 
@@ -492,7 +492,9 @@ describe TimeFrame do
       time_frame1 = TimeFrame.new(min: Time.zone.local(2012), duration: 1.days)
       time_frame2 = time_frame1.shift_by(-2.day)
       time_frame3 = time_frame1.shift_by(-4.days)
-      expect(TimeFrame.intersection([time_frame1, time_frame2, time_frame3])).to be_empty
+      expect(
+        TimeFrame.intersection([time_frame1, time_frame2, time_frame3])
+      ).to be_empty
     end
   end
 
@@ -828,9 +830,9 @@ describe TimeFrame do
     end
 
     it 'raises a TypeError when time frame is empty' do
-      expect {
+      expect do
         TimeFrame::EMPTY.shift_to(Time.zone.local(2012, 1, 2))
-      }.to raise_error TypeError
+      end.to raise_error TypeError
     end
   end
 
@@ -947,7 +949,7 @@ describe TimeFrame do
     end
 
     it 'returns self (as a singleton array) if there are no arguments' do
-      expect(time_frame.without()).to eq [time_frame]
+      expect(time_frame.without).to eq [time_frame]
     end
 
     it 'returns an empty array if self is empty' do

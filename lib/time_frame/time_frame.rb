@@ -34,17 +34,13 @@ class TimeFrame
   def deviation_of(item)
     case
     when item.respond_to?(:min) && item.respond_to?(:max)
-      if item.empty?
-        Float::INFINITY
-      else
-        [deviation_of(item.min), deviation_of(item.max)].min_by(&:abs)
-      end
+      item.empty? ? Float::INFINITY : [
+        deviation_of(item.min), deviation_of(item.max)
+      ].min_by(&:abs)
     when cover?(item)
       0
-    when item < min
-      item - min
     else
-      item - max
+      [(item - max).abs, (item - max).abs].min
     end
   end
 
@@ -72,11 +68,7 @@ class TimeFrame
     return EMPTY if other.empty?
     new_min = [min, other.min].max
     new_max = [max, other.max].min
-    if new_min <= new_max
-      TimeFrame.new(min: new_min, max: new_max)
-    else
-      EMPTY
-    end
+    new_min <= new_max ? TimeFrame.new(min: new_min, max: new_max) : EMPTY
   end
 
   def shift_by(duration)
