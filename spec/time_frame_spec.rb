@@ -305,52 +305,6 @@ describe TimeFrame do
     end
   end
 
-  describe '#split_to_interval' do
-    let(:time_frame) do
-      TimeFrame.new(min: Time.zone.local(2012), duration: 1.day)
-    end
-    context 'when time frame duration is divisible by interval' do
-      context 'and interval length equals duration' do
-        subject { time_frame.split_by_interval(1.day) }
-        it { should eq [time_frame] }
-      end
-      context 'and interval is smaller than duration' do
-        let(:first_time_frame) do
-          TimeFrame.new(min: time_frame.min, duration: 12.hours)
-        end
-        subject { time_frame.split_by_interval(12.hours) }
-        it do
-          should eq [first_time_frame, first_time_frame.shift_by(12.hours)]
-        end
-      end
-      context 'and frame starts at a time, not divisible by interval' do
-        let(:other_time_frame) do
-          TimeFrame.new(
-            min: Time.zone.local(2012) + 1.minute,
-            duration: 1.day
-          )
-        end
-        let(:first_time_frame) do
-          TimeFrame.new(min: other_time_frame.min, duration: 12.hours)
-        end
-        subject { other_time_frame.split_by_interval(12.hours) }
-        it do
-          should eq [first_time_frame, first_time_frame.shift_by(12.hours)]
-        end
-      end
-    end
-    context 'when time frame duration is not divisible by interval' do
-      let(:expected) do
-        [
-          TimeFrame.new(min: time_frame.min, duration: 18.hours),
-          TimeFrame.new(min: time_frame.min + 18.hours, duration: 6.hours)
-        ]
-      end
-      subject { time_frame.split_by_interval(18.hours) }
-      it { should eq expected }
-    end
-  end
-
   describe '#empty?' do
     context 'when min equals max' do
       subject { TimeFrame.new(min: time, max: time) }
