@@ -125,50 +125,50 @@ describe TimeFrame do
   end
 
   describe '#==' do
-    let(:frame) { TimeFrame.new(min: time, duration: 2.hours) }
+    let(:time_frame) { TimeFrame.new(min: time, duration: 2.hours) }
     context 'when borders are equal' do
       let(:other) { TimeFrame.new(min: time, duration: 2.hours) }
-      subject { frame == other }
+      subject { time_frame == other }
       it { should be_true }
     end
     context 'when min value is different' do
       let(:other) do
         TimeFrame.new(min: time - 1.hour, max: time + 2.hours)
       end
-      subject { frame == other }
+      subject { time_frame == other }
       it { should be_false }
     end
     context 'when max value is different' do
       let(:other) { TimeFrame.new(min: time, duration: 3.hours) }
-      subject { frame == other }
+      subject { time_frame == other }
       it { should be_false }
     end
   end
 
   describe '#cover?' do
-    let(:frame) { TimeFrame.new(min: time, duration: 4.hours) }
+    let(:time_frame) { TimeFrame.new(min: time, duration: 4.hours) }
     context 'when argument is a Time instance' do
       context 'and its covered' do
         context 'and equal to min' do
-          subject { frame.cover?(frame.min) }
+          subject { time_frame.cover?(time_frame.min) }
           it { should be_true }
         end
         context 'and equal to max' do
-          subject { frame.cover?(frame.max) }
+          subject { time_frame.cover?(time_frame.max) }
           it { should be_true }
         end
         context 'and is an inner value' do
-          subject { frame.cover?(frame.min + 1.hour) }
+          subject { time_frame.cover?(time_frame.min + 1.hour) }
           it { should be_true }
         end
       end
       context 'and its not covered' do
         context 'and smaller than min' do
-          subject { frame.cover?(frame.min - 1.hour) }
+          subject { time_frame.cover?(time_frame.min - 1.hour) }
           it { should be_false }
         end
         context 'and greater than max' do
-          subject { frame.cover?(frame.max + 5.hours) }
+          subject { time_frame.cover?(time_frame.max + 5.hours) }
           it { should be_false }
         end
       end
@@ -176,59 +176,61 @@ describe TimeFrame do
     context 'when argument is a TimeFrame' do
       context 'and its covered' do
         context 'and they have the same min value' do
-          let(:other) { TimeFrame.new(min: frame.min, duration: 2.hours) }
-          subject { frame.cover?(other) }
+          let(:other) { TimeFrame.new(min: time_frame.min, duration: 2.hours) }
+          subject { time_frame.cover?(other) }
           it { should be_true }
         end
         context 'and they have the same max value' do
           let(:other) do
-            TimeFrame.new(min: frame.min + 1.hour, max: frame.max)
+            TimeFrame.new(min: time_frame.min + 1.hour, max: time_frame.max)
           end
-          subject { frame.cover?(other) }
+          subject { time_frame.cover?(other) }
           it { should be_true }
         end
         context 'and it is within the interior of self' do
           let(:other) do
-            TimeFrame.new(min: frame.min + 1.hour, max: frame.max - 1.hour)
+            TimeFrame.new(
+              min: time_frame.min + 1.hour, max: time_frame.max - 1.hour
+            )
           end
-          subject { frame.cover?(other) }
+          subject { time_frame.cover?(other) }
           it { should be_true }
         end
         context 'and are equal' do
-          let(:other) { frame.clone }
-          subject { frame.cover?(other) }
+          let(:other) { time_frame.clone }
+          subject { time_frame.cover?(other) }
           it { should be_true }
         end
       end
       context 'and it is not covered' do
         context 'and other is left of self' do
-          let(:other) { frame.shift_by(-5.hours) }
-          subject { frame.cover?(other) }
+          let(:other) { time_frame.shift_by(-5.hours) }
+          subject { time_frame.cover?(other) }
           it { should be_false }
         end
         context 'and other overlaps left hand side' do
-          let(:other) { frame.shift_by(-1.hour) }
-          subject { frame.cover?(other) }
+          let(:other) { time_frame.shift_by(-1.hour) }
+          subject { time_frame.cover?(other) }
           it { should be_false }
         end
         context 'and other overlaps left hand side at the border only' do
-          let(:other) { frame.shift_by(-frame.duration) }
-          subject { frame.cover?(other) }
+          let(:other) { time_frame.shift_by(-time_frame.duration) }
+          subject { time_frame.cover?(other) }
           it { should be_false }
         end
         context 'and other is right of self' do
-          let(:other) { frame.shift_by(5.hours) }
-          subject { frame.cover?(other) }
+          let(:other) { time_frame.shift_by(5.hours) }
+          subject { time_frame.cover?(other) }
           it { should be_false }
         end
         context 'and other overlaps right hand side' do
-          let(:other) { frame.shift_by(1.hours) }
-          subject { frame.cover?(other) }
+          let(:other) { time_frame.shift_by(1.hours) }
+          subject { time_frame.cover?(other) }
           it { should be_false }
         end
         context 'and other overlaps right hand side at the border only' do
-          let(:other) { frame.shift_by(frame.duration) }
-          subject { frame.cover?(other) }
+          let(:other) { time_frame.shift_by(time_frame.duration) }
+          subject { time_frame.cover?(other) }
           it { should be_false }
         end
       end
@@ -325,90 +327,104 @@ describe TimeFrame do
     end
 
     context 'when given a single time frame' do
-      let(:frame) { TimeFrame.new(min: time, duration: 1.hour) }
-      subject { TimeFrame.union([frame]) }
-      it { should eq [frame] }
+      let(:time_frame) { TimeFrame.new(min: time, duration: 1.hour) }
+      subject { TimeFrame.union([time_frame]) }
+      it { should eq [time_frame] }
     end
 
     context 'when getting single element it returns a dup' do
-      let(:frames) { [TimeFrame.new(min: time, duration: 1.hour)] }
-      subject { TimeFrame.union(frames) }
-      it { should_not equal frames }
+      let(:time_frames) { [TimeFrame.new(min: time, duration: 1.hour)] }
+      subject { TimeFrame.union(time_frames) }
+      it { should_not equal time_frames }
     end
 
     context 'when given time frames' do
       context 'in order' do
         context 'and no sorted flag is provided' do
           context 'that are overlapping' do
-            let(:frame1) { TimeFrame.new(min: time, duration: 2.hours) }
-            let(:frame2) { frame1.shift_by(1.hour) }
+            let(:time_frame1) { TimeFrame.new(min: time, duration: 2.hours) }
+            let(:time_frame2) { time_frame1.shift_by(1.hour) }
             let(:expected) do
-              [TimeFrame.new(min: frame1.min, max: frame2.max)]
+              [TimeFrame.new(min: time_frame1.min, max: time_frame2.max)]
             end
-            subject { TimeFrame.union([frame1, frame2]) }
+            subject { TimeFrame.union([time_frame1, time_frame2]) }
             it { should eq expected }
           end
           context 'that are disjoint' do
-            let(:frame1) { TimeFrame.new(min: time, duration: 2.hours) }
-            let(:frame2) { frame1.shift_by(3.hours) }
-            subject { TimeFrame.union([frame1, frame2]) }
-            it { should eq [frame1, frame2] }
+            let(:time_frame1) { TimeFrame.new(min: time, duration: 2.hours) }
+            let(:time_frame2) { time_frame1.shift_by(3.hours) }
+            subject { TimeFrame.union([time_frame1, time_frame2]) }
+            it { should eq [time_frame1, time_frame2] }
           end
           context 'that intersect at their boundaries' do
-            let(:frame1) { TimeFrame.new(min: time, duration: + 2.hour) }
-            let(:frame2) { frame1.shift_by(frame1.duration) }
+            let(:time_frame1) { TimeFrame.new(min: time, duration: + 2.hour) }
+            let(:time_frame2) { time_frame1.shift_by(time_frame1.duration) }
             let(:expected) do
-              [TimeFrame.new(min: frame1.min, max: frame2.max)]
+              [TimeFrame.new(min: time_frame1.min, max: time_frame2.max)]
             end
-            subject { TimeFrame.union([frame1, frame2]) }
+            subject { TimeFrame.union([time_frame1, time_frame2]) }
             it { should eq expected }
           end
         end
         context 'and the sorted flag is provided' do
           context 'that are overlapping' do
-            let(:frame1) { TimeFrame.new(min: time, duration: 2.hours) }
-            let(:frame2) { frame1.shift_by(1.hour) }
+            let(:time_frame1) { TimeFrame.new(min: time, duration: 2.hours) }
+            let(:time_frame2) { time_frame1.shift_by(1.hour) }
             let(:expected) do
-              [TimeFrame.new(min: frame1.min, max: frame2.max)]
+              [TimeFrame.new(min: time_frame1.min, max: time_frame2.max)]
             end
-            subject { TimeFrame.union([frame1, frame2], sorted: true) }
+            subject do
+              TimeFrame.union([time_frame1, time_frame2], sorted: true)
+            end
             it { should eq expected }
           end
           context 'that are disjoint' do
-            let(:frame1) { TimeFrame.new(min: time, duration: 2.hours) }
-            let(:frame2) { frame1.shift_by(3.hours) }
-            subject { TimeFrame.union([frame1, frame2], sorted: true) }
-            it { should eq [frame1, frame2] }
+            let(:time_frame1) { TimeFrame.new(min: time, duration: 2.hours) }
+            let(:time_frame2) { time_frame1.shift_by(3.hours) }
+            subject do
+              TimeFrame.union([time_frame1, time_frame2], sorted: true)
+            end
+            it { should eq [time_frame1, time_frame2] }
           end
           context 'that intersect at their boundaries' do
-            let(:frame1) { TimeFrame.new(min: time, duration: + 2.hour) }
-            let(:frame2) { frame1.shift_by(frame1.duration) }
+            let(:time_frame1) { TimeFrame.new(min: time, duration: + 2.hour) }
+            let(:time_frame2) { time_frame1.shift_by(time_frame1.duration) }
             let(:expected) do
-              [TimeFrame.new(min: frame1.min, max: frame2.max)]
+              [TimeFrame.new(min: time_frame1.min, max: time_frame2.max)]
             end
-            subject { TimeFrame.union([frame1, frame2], sorted: true) }
+            subject do
+              TimeFrame.union([time_frame1, time_frame2], sorted: true)
+            end
             it { should eq expected }
           end
         end
       end
       context 'not in order' do
         context 'that are overlapping' do
-          let(:frame1) { TimeFrame.new(min: time, duration: 2.hours) }
-          let(:frame2) { frame1.shift_by(1.hour) }
-          subject { TimeFrame.union([frame2, frame1]) }
-          it { should eq [TimeFrame.new(min: frame1.min, max: frame2.max)] }
+          let(:time_frame1) { TimeFrame.new(min: time, duration: 2.hours) }
+          let(:time_frame2) { time_frame1.shift_by(1.hour) }
+          subject { TimeFrame.union([time_frame2, time_frame1]) }
+          it do
+            should eq [
+              TimeFrame.new(min: time_frame1.min, max: time_frame2.max)
+            ]
+          end
         end
         context 'that are disjoint' do
-          let(:frame1) { TimeFrame.new(min: time, duration: 2.hours) }
-          let(:frame2) { frame1.shift_by(3.hours) }
-          subject { TimeFrame.union([frame2, frame1]) }
-          it { should eq [frame1, frame2] }
+          let(:time_frame1) { TimeFrame.new(min: time, duration: 2.hours) }
+          let(:time_frame2) { time_frame1.shift_by(3.hours) }
+          subject { TimeFrame.union([time_frame2, time_frame1]) }
+          it { should eq [time_frame1, time_frame2] }
         end
         context 'that intersect at their boundaries' do
-          let(:frame1) { TimeFrame.new(min: time, duration: + 2.hour) }
-          let(:frame2) { frame1.shift_by(frame1.duration) }
-          subject { TimeFrame.union([frame2, frame1]) }
-          it { should eq [TimeFrame.new(min: frame1.min, max: frame2.max)] }
+          let(:time_frame1) { TimeFrame.new(min: time, duration: + 2.hour) }
+          let(:time_frame2) { time_frame1.shift_by(time_frame1.duration) }
+          subject { TimeFrame.union([time_frame2, time_frame1]) }
+          it do
+            should eq [
+              TimeFrame.new(min: time_frame1.min, max: time_frame2.max)
+            ]
+          end
         end
       end
     end
@@ -416,130 +432,140 @@ describe TimeFrame do
 
   describe '.intersection' do
     it 'returns the intersection of all time frames' do
-      frame1 = TimeFrame.new(min: Time.zone.local(2012), duration: 3.days)
-      frame2 = frame1.shift_by(-1.day)
-      frame3 = frame1.shift_by(-2.days)
-      expect(TimeFrame.intersection([frame1, frame2, frame3]))
+      time_frame1 = TimeFrame.new(min: Time.zone.local(2012), duration: 3.days)
+      time_frame2 = time_frame1.shift_by(-1.day)
+      time_frame3 = time_frame1.shift_by(-2.days)
+      expect(TimeFrame.intersection([time_frame1, time_frame2, time_frame3]))
         .to eq TimeFrame.new(min: Time.zone.local(2012), duration: 1.day)
     end
     it 'returns nil if the intersection is empty' do
-      frame1 = TimeFrame.new(min: Time.zone.local(2012), duration: 1.days)
-      frame2 = frame1.shift_by(-2.day)
-      frame3 = frame1.shift_by(-4.days)
-      expect(TimeFrame.intersection([frame1, frame2, frame3])).to be_nil
+      time_frame1 = TimeFrame.new(min: Time.zone.local(2012), duration: 1.days)
+      time_frame2 = time_frame1.shift_by(-2.day)
+      time_frame3 = time_frame1.shift_by(-4.days)
+      expect(
+        TimeFrame.intersection([time_frame1, time_frame2, time_frame3])
+      ).to be_nil
     end
   end
 
   describe '#overlaps?' do
-    let(:frame) { TimeFrame.new(min: time, duration: 3.hours) }
+    let(:time_frame) { TimeFrame.new(min: time, duration: 3.hours) }
     context 'when self is equal to other' do
-      let(:other) { frame.clone }
-      subject { frame.overlaps?(other) }
+      let(:other) { time_frame.clone }
+      subject { time_frame.overlaps?(other) }
       it { should be_true }
     end
     context 'when self covers other' do
       let(:other) do
-        TimeFrame.new(min: frame.min + 1.hour, max: frame.max - 1.hour)
+        TimeFrame.new(
+          min: time_frame.min + 1.hour, max: time_frame.max - 1.hour
+        )
       end
-      subject { frame.overlaps?(other) }
+      subject { time_frame.overlaps?(other) }
       it { should be_true }
     end
     context 'when other covers self' do
       let(:other) do
-        TimeFrame.new(min: frame.min - 1.hour, max: frame.max + 1.hour)
+        TimeFrame.new(
+          min: time_frame.min - 1.hour, max: time_frame.max + 1.hour
+        )
       end
-      subject { frame.overlaps?(other) }
+      subject { time_frame.overlaps?(other) }
       it { should be_true }
     end
     context 'when self begins earlier than other' do
       context 'and they are disjoint' do
-        let(:other) { frame.shift_by(-frame.duration - 1.hour) }
-        subject { frame.overlaps?(other) }
+        let(:other) { time_frame.shift_by(-time_frame.duration - 1.hour) }
+        subject { time_frame.overlaps?(other) }
         it { should be_false }
       end
       context 'and they are overlapping' do
-        let(:other) { frame.shift_by(-1.hours) }
-        subject { frame.overlaps?(other) }
+        let(:other) { time_frame.shift_by(-1.hours) }
+        subject { time_frame.overlaps?(other) }
         it { should be_true }
       end
       context 'and they intersect at their boundaries' do
-        let(:other) { frame.shift_by(-frame.duration) }
-        subject { frame.overlaps?(other) }
+        let(:other) { time_frame.shift_by(-time_frame.duration) }
+        subject { time_frame.overlaps?(other) }
         it { should be_false }
       end
     end
     context 'when other begins earlier than self' do
       context 'and they are disjoint' do
-        let(:other) { frame.shift_by(frame.duration + 1.hour) }
-        subject { frame.overlaps?(other) }
+        let(:other) { time_frame.shift_by(time_frame.duration + 1.hour) }
+        subject { time_frame.overlaps?(other) }
         it { should be_false }
       end
       context 'and they are overlapping' do
-        let(:other) { frame.shift_by(1.hours) }
-        subject { frame.overlaps?(other) }
+        let(:other) { time_frame.shift_by(1.hours) }
+        subject { time_frame.overlaps?(other) }
         it { should be_true }
       end
       context 'and they intersect at their boundaries' do
-        let(:other) { frame.shift_by(frame.duration) }
-        subject { frame.overlaps?(other) }
+        let(:other) { time_frame.shift_by(time_frame.duration) }
+        subject { time_frame.overlaps?(other) }
         it { should be_false }
       end
     end
   end
 
   describe '#&' do
-    let(:frame) { TimeFrame.new(min: time, duration: 3.hours) }
+    let(:time_frame) { TimeFrame.new(min: time, duration: 3.hours) }
     context 'when self is equal to other' do
-      let(:other) { frame.clone }
-      subject { frame & other }
-      it { should eq frame }
+      let(:other) { time_frame.clone }
+      subject { time_frame & other }
+      it { should eq time_frame }
     end
     context 'when self covers other' do
       let(:other) do
-        TimeFrame.new(min: frame.min + 1.hour, max: frame.max - 1.hour)
+        TimeFrame.new(
+          min: time_frame.min + 1.hour, max: time_frame.max - 1.hour
+        )
       end
-      subject { frame & other }
+      subject { time_frame & other }
       it { should eq other }
     end
     context 'when other covers self' do
       let(:other) do
-        TimeFrame.new(min: frame.min - 1.hour, max: frame.max + 1.hour)
+        TimeFrame.new(
+          min: time_frame.min - 1.hour, max: time_frame.max + 1.hour
+        )
       end
-      subject { frame & other }
-      it { should eq frame }
+      subject { time_frame & other }
+      it { should eq time_frame }
     end
     context 'when self begins earlier than other' do
       context 'and they are disjoint' do
-        let(:other) { frame.shift_by(frame.duration + 1.hour) }
-        subject { frame & other }
+        let(:other) { time_frame.shift_by(time_frame.duration + 1.hour) }
+        subject { time_frame & other }
         it { should be_nil }
       end
       context 'and they are overlapping' do
-        let(:other) { frame.shift_by(1.hour) }
-        subject { frame & other }
-        it { should eq TimeFrame.new(min: other.min, max: frame.max) }
+        let(:other) { time_frame.shift_by(1.hour) }
+        subject { time_frame & other }
+        it { should eq TimeFrame.new(min: other.min, max: time_frame.max) }
       end
       context 'and they intersect at their boundaries' do
-        let(:other) { frame.shift_by(frame.duration) }
-        subject { frame & other }
-        it { should eq TimeFrame.new(min: frame.max, max: frame.max) }
+        let(:other) { time_frame.shift_by(time_frame.duration) }
+        subject { time_frame & other }
+        it { should eq TimeFrame.new(min: time_frame.max, max: time_frame.max) }
       end
     end
     context 'when other begins earlier than self' do
       context 'and they are disjoint' do
-        let(:other) { frame.shift_by(-frame.duration - 1.hour) }
-        subject { frame & other }
+        let(:other) { time_frame.shift_by(-time_frame.duration - 1.hour) }
+        subject { time_frame & other }
         it { should be_nil }
       end
       context 'and they are overlapping' do
-        let(:other) { frame.shift_by(-1.hour) }
-        subject { frame & other }
-        it { should eq TimeFrame.new(min: frame.min, max: other.max) }
+        let(:other) { time_frame.shift_by(-1.hour) }
+        subject { time_frame & other }
+        it { should eq TimeFrame.new(min: time_frame.min, max: other.max) }
       end
       context 'and they intersect at their boundaries' do
-        let(:other) { frame.shift_by(-frame.duration) }
-        subject { frame & other }
-        it { should eq TimeFrame.new(min: frame.min, max: frame.min) }
+        let(:other) { time_frame.shift_by(-time_frame.duration) }
+        subject { time_frame & other }
+        it { should eq TimeFrame.new(min: time_frame.min, max: time_frame.min) }
       end
     end
   end
@@ -587,7 +613,7 @@ describe TimeFrame do
           expect(subject[day]).to eq expected.shift_by(day.days)
         end
       end
-      it 'should have a smaller frame at the end' do
+      it 'should have a smaller time_frame at the end' do
         expected = TimeFrame.new(min: time + 7.days, duration: 12.hours)
         expect(subject[7]).to eq expected
       end
@@ -597,9 +623,9 @@ describe TimeFrame do
   describe '#shift_by' do
     let(:min) { time }
     let(:max) { time + 2.days }
-    let(:frame) { TimeFrame.new(min: min, max: max) }
+    let(:time_frame) { TimeFrame.new(min: min, max: max) }
     context 'when shifting into the future' do
-      subject { frame.shift_by(1.day) }
+      subject { time_frame.shift_by(1.day) }
 
       describe '#min' do
         subject { super().min }
@@ -610,10 +636,10 @@ describe TimeFrame do
         subject { super().max }
         it { should eq max + 1.day }
       end
-      it { should_not equal frame }
+      it { should_not equal time_frame }
     end
     context 'when shifting into the past' do
-      subject { frame.shift_by(-1.day) }
+      subject { time_frame.shift_by(-1.day) }
 
       describe '#min' do
         subject { super().min }
@@ -624,10 +650,10 @@ describe TimeFrame do
         subject { super().max }
         it { should eq max - 1.day }
       end
-      it { should_not equal frame }
+      it { should_not equal time_frame }
     end
     context 'when shifting by 0' do
-      subject { frame.shift_by(0) }
+      subject { time_frame.shift_by(0) }
 
       describe '#min' do
         subject { super().min }
@@ -638,10 +664,10 @@ describe TimeFrame do
         subject { super().max }
         it { should eq max }
       end
-      it { should_not equal frame }
+      it { should_not equal time_frame }
     end
     context 'when shifting back and forth' do
-      subject { frame.shift_by(-1.day).shift_by(1.day) }
+      subject { time_frame.shift_by(-1.day).shift_by(1.day) }
 
       describe '#min' do
         subject { super().min }
@@ -652,7 +678,7 @@ describe TimeFrame do
         subject { super().max }
         it { should eq max }
       end
-      it { should_not equal frame }
+      it { should_not equal time_frame }
     end
   end
 
@@ -661,12 +687,12 @@ describe TimeFrame do
     let(:duration) { 1.day }
     let(:min)      { Time.zone.local(2012, 1, 2) }
     let(:max)      { min + duration }
-    let(:frame)    { TimeFrame.new(min: min, max: max) }
+    let(:time_frame)    { TimeFrame.new(min: min, max: max) }
 
     context 'when shifting to a future time' do
       let(:destination) { min + duration }
-      subject   { frame.shift_to(destination) }
-      it { should_not equal frame }
+      subject   { time_frame.shift_to(destination) }
+      it { should_not equal time_frame }
 
       describe '#min' do
         subject { super().min }
@@ -681,8 +707,8 @@ describe TimeFrame do
 
     context 'when shifting to a past time' do
       let(:destination) { min - duration }
-      subject   { frame.shift_to(destination) }
-      it { should_not equal frame }
+      subject   { time_frame.shift_to(destination) }
+      it { should_not equal time_frame }
 
       describe '#min' do
         subject { super().min }
@@ -697,8 +723,8 @@ describe TimeFrame do
 
     context 'when shifting to same time' do
       let(:destination) { min }
-      subject   { frame.shift_to(destination) }
-      it { should_not equal frame }
+      subject   { time_frame.shift_to(destination) }
+      it { should_not equal time_frame }
 
       describe '#min' do
         subject { super().min }
@@ -713,74 +739,76 @@ describe TimeFrame do
   end
 
   describe '#without' do
-    context 'when providing a single frame' do
-      let(:frame) { TimeFrame.new(min: time, duration: 1.hour) }
+    context 'when providing a single time_frame' do
+      let(:time_frame) { TimeFrame.new(min: time, duration: 1.hour) }
 
       context 'and other is left of self' do
         context 'and they have a common border' do
-          let(:other) { frame.shift_by(-frame.duration) }
-          subject { frame.without(other) }
-          it { should eq [frame] }
+          let(:other) { time_frame.shift_by(-time_frame.duration) }
+          subject { time_frame.without(other) }
+          it { should eq [time_frame] }
         end
         context 'and they do not have a common border' do
-          let(:other) { frame.shift_by(-2 * frame.duration) }
-          subject { frame.without(other) }
-          it { should eq [frame] }
+          let(:other) { time_frame.shift_by(-2 * time_frame.duration) }
+          subject { time_frame.without(other) }
+          it { should eq [time_frame] }
         end
         context 'and they overlap' do
-          let(:other) { frame.shift_by(-0.5 * frame.duration) }
-          subject { frame.without(other) }
-          it { should eq [TimeFrame.new(min: other.max, max: frame.max)] }
+          let(:other) { time_frame.shift_by(-0.5 * time_frame.duration) }
+          subject { time_frame.without(other) }
+          it { should eq [TimeFrame.new(min: other.max, max: time_frame.max)] }
         end
       end
 
       context 'and other is right of self' do
         context 'and they have a common border' do
-          let(:other) { frame.shift_by(frame.duration) }
-          subject { frame.without(other) }
-          it { should eq [frame] }
+          let(:other) { time_frame.shift_by(time_frame.duration) }
+          subject { time_frame.without(other) }
+          it { should eq [time_frame] }
         end
         context 'and they do not have a common border' do
-          let(:other) { frame.shift_by(2 * frame.duration) }
-          subject { frame.without(other) }
-          it { should eq [frame] }
+          let(:other) { time_frame.shift_by(2 * time_frame.duration) }
+          subject { time_frame.without(other) }
+          it { should eq [time_frame] }
         end
         context 'and they overlap' do
-          let(:other) { frame.shift_by(0.5 * frame.duration) }
-          subject { frame.without(other) }
-          it { should eq [TimeFrame.new(min: frame.min, max: other.min)] }
+          let(:other) { time_frame.shift_by(0.5 * time_frame.duration) }
+          subject { time_frame.without(other) }
+          it { should eq [TimeFrame.new(min: time_frame.min, max: other.min)] }
         end
       end
 
       context 'and other is contained within self' do
         context 'and other is equal to self' do
-          subject { frame.without(frame) }
+          subject { time_frame.without(time_frame) }
           it { should eq [] }
         end
         context 'and only left boundaries are equal' do
           let(:other) do
-            TimeFrame.new(min: time, duration: frame.duration / 2)
+            TimeFrame.new(min: time, duration: time_frame.duration / 2)
           end
-          subject { frame.without(other) }
-          it { should eq [TimeFrame.new(min: other.max, max: frame.max)] }
+          subject { time_frame.without(other) }
+          it { should eq [TimeFrame.new(min: other.max, max: time_frame.max)] }
         end
         context 'and only right boundaries are equal' do
           let(:other) do
-            TimeFrame.new(min: time + frame.duration / 2, max: frame.max)
+            TimeFrame.new(
+              min: time + time_frame.duration / 2, max: time_frame.max
+            )
           end
-          subject { frame.without(other) }
-          it { should eq [TimeFrame.new(min: frame.min, max: other.min)] }
+          subject { time_frame.without(other) }
+          it { should eq [TimeFrame.new(min: time_frame.min, max: other.min)] }
         end
         context 'and they have no boundary in common' do
           let(:other) do
-            TimeFrame.new(min: time + frame.duration / 3,
-                          duration: frame.duration / 3)
+            TimeFrame.new(min: time + time_frame.duration / 3,
+                          duration: time_frame.duration / 3)
           end
-          subject { frame.without(other) }
+          subject { time_frame.without(other) }
           it do
             should eq [
-              TimeFrame.new(min: frame.min, max: other.min),
-              TimeFrame.new(min: other.max, max: frame.max)
+              TimeFrame.new(min: time_frame.min, max: other.min),
+              TimeFrame.new(min: other.max, max: time_frame.max)
             ]
           end
         end
@@ -788,40 +816,40 @@ describe TimeFrame do
     end
 
     context 'when providing an array' do
-      let(:frame) { TimeFrame.new(min: time, duration: 10.hours) }
-      context 'and providing one frame' do
+      let(:time_frame) { TimeFrame.new(min: time, duration: 10.hours) }
+      context 'and providing one time_frame' do
         context 'and its equal to self' do
-          let(:arg) { [frame] }
-          subject { frame.without(*arg) }
+          let(:arg) { [time_frame] }
+          subject { time_frame.without(*arg) }
           it { should eq [] }
         end
       end
-      context 'and providing several frames' do
+      context 'and providing several time_frames' do
         context 'and they do not intersect' do
           context 'and do not touch the boundaries' do
             let(:arg) do
-              shift = frame.duration + 1.hour
+              shift = time_frame.duration + 1.hour
               [
                 TimeFrame.new(min: time - 2.hours, duration: 1.hour),
                 TimeFrame.new(min: time + shift, duration: 1.hour)
               ]
             end
-            subject { frame.without(*arg) }
-            it { should eq [frame] }
+            subject { time_frame.without(*arg) }
+            it { should eq [time_frame] }
           end
           context 'and they touch boundaries' do
             let(:arg) do
               [
                 TimeFrame.new(min: time - 1.hour, duration: 1.hour),
-                TimeFrame.new(min: time + frame.duration, duration: 1.hour)
+                TimeFrame.new(min: time + time_frame.duration, duration: 1.hour)
               ]
             end
-            subject { frame.without(*arg) }
-            it { should eq [frame] }
+            subject { time_frame.without(*arg) }
+            it { should eq [time_frame] }
           end
         end
         context 'and they intersect' do
-          context 'and the argument frames overlaps themself' do
+          context 'and the argument time_frames overlaps themself' do
             let(:arg) do
               [
                 TimeFrame.new(min: time + 1.hour, duration: 2.hours),
@@ -830,27 +858,27 @@ describe TimeFrame do
             end
             let(:expected) do
               [
-                TimeFrame.new(min: frame.min, duration: 1.hour),
-                TimeFrame.new(min: time + 4.hours, max: frame.max)
+                TimeFrame.new(min: time_frame.min, duration: 1.hour),
+                TimeFrame.new(min: time + 4.hours, max: time_frame.max)
               ]
             end
-            subject { frame.without(*arg) }
+            subject { time_frame.without(*arg) }
             it { should eq expected }
           end
           context 'and they cover self' do
             let(:arg) do
-              duration = 0.5 * frame.duration
+              duration = 0.5 * time_frame.duration
               [
                 TimeFrame.new(min: time, duration: duration),
                 TimeFrame.new(min: time + duration, duration: duration)
               ]
             end
-            subject { frame.without(*arg) }
+            subject { time_frame.without(*arg) }
             it { should eq [] }
           end
           context 'and they overlap at the boundaries' do
             let(:arg) do
-              shift = frame.duration - 1.hour
+              shift = time_frame.duration - 1.hour
               [
                 TimeFrame.new(min: time - 1.hour, duration: 2.hour),
                 TimeFrame.new(min: time + shift, duration: 2.hour)
@@ -858,14 +886,14 @@ describe TimeFrame do
             end
             let(:expected) do
               [
-                TimeFrame.new(min: frame.min + 1.hour,
-                              max: frame.max - 1.hour)
+                TimeFrame.new(min: time_frame.min + 1.hour,
+                              max: time_frame.max - 1.hour)
               ]
             end
-            subject { frame.without(*arg) }
+            subject { time_frame.without(*arg) }
             it { should eq expected }
           end
-          context 'and we have three frames in args overlaped by self' do
+          context 'and we have three time_frames in args overlaped by self' do
             context 'which are sorted' do
               let(:arg) do
                 [
@@ -882,7 +910,7 @@ describe TimeFrame do
                   TimeFrame.new(min: time + 9.hours, max: time + 10.hours)
                 ]
               end
-              subject { frame.without(*arg) }
+              subject { time_frame.without(*arg) }
               it { should eq expected }
             end
             context 'and they are unsorted' do
@@ -901,7 +929,7 @@ describe TimeFrame do
                   TimeFrame.new(min: time + 9.hours, max: time + 10.hours)
                 ]
               end
-              subject { frame.without(*arg) }
+              subject { time_frame.without(*arg) }
               it { should eq expected }
             end
           end
@@ -918,27 +946,29 @@ describe TimeFrame do
     end
 
     context 'for a single time frame' do
-      let(:frame) { TimeFrame.new(min: time, duration: 1.hour) }
-      subject { TimeFrame.covering_time_frame_for([frame]) }
-      it { should eq frame }
+      let(:time_frame) { TimeFrame.new(min: time, duration: 1.hour) }
+      subject { TimeFrame.covering_time_frame_for([time_frame]) }
+      it { should eq time_frame }
     end
 
     context 'for multiple time frames' do
-      let(:frame1) { TimeFrame.new(min: time, duration: 2.hours) }
-      let(:frame2) { frame1.shift_by(-1.hour) }
-      let(:frame3) { frame1.shift_by(3.hours) }
+      let(:time_frame1) { TimeFrame.new(min: time, duration: 2.hours) }
+      let(:time_frame2) { time_frame1.shift_by(-1.hour) }
+      let(:time_frame3) { time_frame1.shift_by(3.hours) }
       subject do
-        TimeFrame.covering_time_frame_for([frame1, frame2, frame3])
+        TimeFrame.covering_time_frame_for(
+          [time_frame1, time_frame2, time_frame3]
+        )
       end
 
       describe '#min' do
         subject { super().min }
-        it { should eq frame2.min }
+        it { should eq time_frame2.min }
       end
 
       describe '#max' do
         subject { super().max }
-        it { should eq frame3.max }
+        it { should eq time_frame3.max }
       end
     end
   end
