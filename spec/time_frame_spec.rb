@@ -560,30 +560,30 @@ describe TimeFrame do
     it 'returns false when self contains only one point' do
       singleton_time_frame = TimeFrame.new(min: time, max: time)
       time_frame = TimeFrame.new(min: time, duration: 1.hour)
-      expect(singleton_time_frame.overlaps?(time_frame)).to be_false
-      expect(singleton_time_frame.overlaps?(singleton_time_frame)).to be_false
-      expect(singleton_time_frame.overlaps?(TimeFrame::EMPTY)).to be_false
+      expect(singleton_time_frame.overlaps?(time_frame)).to be false
+      expect(singleton_time_frame.overlaps?(singleton_time_frame)).to be false
+      expect(singleton_time_frame.overlaps?(TimeFrame::EMPTY)).to be false
     end
     it 'returns false when self is empty' do
       singleton_time_frame = TimeFrame.new(min: time, max: time)
       time_frame = TimeFrame.new(min: time, duration: 1.hour)
-      expect(TimeFrame::EMPTY.overlaps?(time_frame)).to be_false
-      expect(TimeFrame::EMPTY.overlaps?(singleton_time_frame)).to be_false
-      expect(TimeFrame::EMPTY.overlaps?(TimeFrame::EMPTY)).to be_false
+      expect(TimeFrame::EMPTY.overlaps?(time_frame)).to be false
+      expect(TimeFrame::EMPTY.overlaps?(singleton_time_frame)).to be false
+      expect(TimeFrame::EMPTY.overlaps?(TimeFrame::EMPTY)).to be false
     end
     it 'returns false when other contains only one point' do
       singleton_time_frame = TimeFrame.new(min: time, max: time)
       time_frame = TimeFrame.new(min: time, duration: 1.hour)
-      expect(time_frame.overlaps?(singleton_time_frame)).to be_false
-      expect(singleton_time_frame.overlaps?(singleton_time_frame)).to be_false
-      expect(TimeFrame::EMPTY.overlaps?(singleton_time_frame)).to be_false
+      expect(time_frame.overlaps?(singleton_time_frame)).to be false
+      expect(singleton_time_frame.overlaps?(singleton_time_frame)).to be false
+      expect(TimeFrame::EMPTY.overlaps?(singleton_time_frame)).to be false
     end
     it 'returns false when other is empty' do
       singleton_time_frame = TimeFrame.new(min: time, max: time)
       time_frame = TimeFrame.new(min: time, duration: 1.hour)
-      expect(time_frame.overlaps?(TimeFrame::EMPTY)).to be_false
-      expect(singleton_time_frame.overlaps?(TimeFrame::EMPTY)).to be_false
-      expect(TimeFrame::EMPTY.overlaps?(TimeFrame::EMPTY)).to be_false
+      expect(time_frame.overlaps?(TimeFrame::EMPTY)).to be false
+      expect(singleton_time_frame.overlaps?(TimeFrame::EMPTY)).to be false
+      expect(TimeFrame::EMPTY.overlaps?(TimeFrame::EMPTY)).to be false
     end
   end
 
