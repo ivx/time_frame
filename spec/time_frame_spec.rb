@@ -129,19 +129,19 @@ describe TimeFrame do
     context 'when borders are equal' do
       let(:other) { TimeFrame.new(min: time, duration: 2.hours) }
       subject { time_frame == other }
-      it { should be_true }
+      it { should be true }
     end
     context 'when min value is different' do
       let(:other) do
         TimeFrame.new(min: time - 1.hour, max: time + 2.hours)
       end
       subject { time_frame == other }
-      it { should be_false }
+      it { should be false }
     end
     context 'when max value is different' do
       let(:other) { TimeFrame.new(min: time, duration: 3.hours) }
       subject { time_frame == other }
-      it { should be_false }
+      it { should be false }
     end
   end
 
@@ -151,25 +151,25 @@ describe TimeFrame do
       context 'and its covered' do
         context 'and equal to min' do
           subject { time_frame.cover?(time_frame.min) }
-          it { should be_true }
+          it { should be true }
         end
         context 'and equal to max' do
           subject { time_frame.cover?(time_frame.max) }
-          it { should be_true }
+          it { should be true }
         end
         context 'and is an inner value' do
           subject { time_frame.cover?(time_frame.min + 1.hour) }
-          it { should be_true }
+          it { should be true }
         end
       end
       context 'and its not covered' do
         context 'and smaller than min' do
           subject { time_frame.cover?(time_frame.min - 1.hour) }
-          it { should be_false }
+          it { should be false }
         end
         context 'and greater than max' do
           subject { time_frame.cover?(time_frame.max + 5.hours) }
-          it { should be_false }
+          it { should be false }
         end
       end
     end
@@ -178,14 +178,14 @@ describe TimeFrame do
         context 'and they have the same min value' do
           let(:other) { TimeFrame.new(min: time_frame.min, duration: 2.hours) }
           subject { time_frame.cover?(other) }
-          it { should be_true }
+          it { should be true }
         end
         context 'and they have the same max value' do
           let(:other) do
             TimeFrame.new(min: time_frame.min + 1.hour, max: time_frame.max)
           end
           subject { time_frame.cover?(other) }
-          it { should be_true }
+          it { should be true }
         end
         context 'and it is within the interior of self' do
           let(:other) do
@@ -194,44 +194,44 @@ describe TimeFrame do
             )
           end
           subject { time_frame.cover?(other) }
-          it { should be_true }
+          it { should be true }
         end
         context 'and are equal' do
           let(:other) { time_frame.clone }
           subject { time_frame.cover?(other) }
-          it { should be_true }
+          it { should be true }
         end
       end
       context 'and it is not covered' do
         context 'and other is left of self' do
           let(:other) { time_frame.shift_by(-5.hours) }
           subject { time_frame.cover?(other) }
-          it { should be_false }
+          it { should be false }
         end
         context 'and other overlaps left hand side' do
           let(:other) { time_frame.shift_by(-1.hour) }
           subject { time_frame.cover?(other) }
-          it { should be_false }
+          it { should be false }
         end
         context 'and other overlaps left hand side at the border only' do
           let(:other) { time_frame.shift_by(-time_frame.duration) }
           subject { time_frame.cover?(other) }
-          it { should be_false }
+          it { should be false }
         end
         context 'and other is right of self' do
           let(:other) { time_frame.shift_by(5.hours) }
           subject { time_frame.cover?(other) }
-          it { should be_false }
+          it { should be false }
         end
         context 'and other overlaps right hand side' do
           let(:other) { time_frame.shift_by(1.hours) }
           subject { time_frame.cover?(other) }
-          it { should be_false }
+          it { should be false }
         end
         context 'and other overlaps right hand side at the border only' do
           let(:other) { time_frame.shift_by(time_frame.duration) }
           subject { time_frame.cover?(other) }
-          it { should be_false }
+          it { should be false }
         end
       end
     end
@@ -453,7 +453,7 @@ describe TimeFrame do
     context 'when self is equal to other' do
       let(:other) { time_frame.clone }
       subject { time_frame.overlaps?(other) }
-      it { should be_true }
+      it { should be true }
     end
     context 'when self covers other' do
       let(:other) do
@@ -462,7 +462,7 @@ describe TimeFrame do
         )
       end
       subject { time_frame.overlaps?(other) }
-      it { should be_true }
+      it { should be true }
     end
     context 'when other covers self' do
       let(:other) do
@@ -471,40 +471,40 @@ describe TimeFrame do
         )
       end
       subject { time_frame.overlaps?(other) }
-      it { should be_true }
+      it { should be true }
     end
     context 'when self begins earlier than other' do
       context 'and they are disjoint' do
         let(:other) { time_frame.shift_by(-time_frame.duration - 1.hour) }
         subject { time_frame.overlaps?(other) }
-        it { should be_false }
+        it { should be false }
       end
       context 'and they are overlapping' do
         let(:other) { time_frame.shift_by(-1.hours) }
         subject { time_frame.overlaps?(other) }
-        it { should be_true }
+        it { should be true }
       end
       context 'and they intersect at their boundaries' do
         let(:other) { time_frame.shift_by(-time_frame.duration) }
         subject { time_frame.overlaps?(other) }
-        it { should be_false }
+        it { should be false }
       end
     end
     context 'when other begins earlier than self' do
       context 'and they are disjoint' do
         let(:other) { time_frame.shift_by(time_frame.duration + 1.hour) }
         subject { time_frame.overlaps?(other) }
-        it { should be_false }
+        it { should be false }
       end
       context 'and they are overlapping' do
         let(:other) { time_frame.shift_by(1.hours) }
         subject { time_frame.overlaps?(other) }
-        it { should be_true }
+        it { should be true }
       end
       context 'and they intersect at their boundaries' do
         let(:other) { time_frame.shift_by(time_frame.duration) }
         subject { time_frame.overlaps?(other) }
-        it { should be_false }
+        it { should be false }
       end
     end
   end
