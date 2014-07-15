@@ -705,7 +705,7 @@ describe TimeFrame do
     end
 
     it 'returns an empty array when self is empty' do
-      TimeFrame::EMPTY.split_by_interval(1.day).should eq []
+      expect(TimeFrame::EMPTY.split_by_interval(1.day)).to eq []
     end
   end
 
