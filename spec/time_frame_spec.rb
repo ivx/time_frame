@@ -302,7 +302,7 @@ describe TimeFrame do
         context 'and time is smaller than the left bound' do
           let(:time) { time_frame.min - 42.hours - 42.minutes }
           subject { time_frame.deviation_of(time) }
-          it { should eq(42.hours + 42.minutes) }
+          it { should eq(-42.hours - 42.minutes) }
         end
         context 'and time is greater than the right bound' do
           let(:time) { time_frame.max + 42.hours + 42.minutes }
@@ -335,7 +335,7 @@ describe TimeFrame do
         context 'and time is smaller than the left bound' do
           let(:other) { time_frame.shift_by(-2.days - 42.seconds) }
           subject { time_frame.deviation_of(other) }
-          it { should eq(42.seconds) }
+          it { should eq(-42.seconds) }
         end
         context 'and time is greater than the right bound' do
           let(:other) { time_frame.shift_by(2.days + 42.seconds) }
