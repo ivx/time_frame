@@ -344,10 +344,12 @@ describe TimeFrame do
         end
       end
       it 'fails when only argument is empty' do
-        expect(-> { time_frame.deviation_of(TimeFrame::EMPTY) }).to raise_error
+        expect(-> { time_frame.deviation_of(TimeFrame::EMPTY) })
+          .to raise_error ArgumentError
       end
       it 'fails when only self is empty' do
-        expect(-> { TimeFrame::EMPTY.deviation_of(time_frame) }).to raise_error
+        expect(-> { TimeFrame::EMPTY.deviation_of(time_frame) })
+          .to raise_error TypeError
       end
     end
   end

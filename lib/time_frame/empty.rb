@@ -16,7 +16,7 @@ class TimeFrame
     end
 
     def deviation_of(_)
-      fail 'deviation_of is undefined for empty time frame'
+      fail TypeError, 'deviation_of is undefined for empty time frame'
     end
 
     def &(_other)
