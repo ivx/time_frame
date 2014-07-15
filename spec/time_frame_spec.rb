@@ -343,14 +343,11 @@ describe TimeFrame do
           it { should eq 42.seconds }
         end
       end
-      it 'returns Float::INFINITY when only argument is empty' do
-        expect(time_frame.deviation_of(TimeFrame::EMPTY)).to eq Float::INFINITY
+      it 'fails when only argument is empty' do
+        expect(-> { time_frame.deviation_of(TimeFrame::EMPTY) }).to raise_error
       end
-      it 'returns Float::INFINITY when only self is empty' do
-        expect(TimeFrame::EMPTY.deviation_of(time_frame)).to eq Float::INFINITY
-      end
-      it 'returns 0 when self and argument are both empty' do
-        expect(TimeFrame::EMPTY.deviation_of(TimeFrame::EMPTY)).to eq 0
+      it 'fails when only self is empty' do
+        expect(-> { TimeFrame::EMPTY.deviation_of(time_frame) }).to raise_error
       end
     end
   end

@@ -15,8 +15,8 @@ class TimeFrame
       true
     end
 
-    def deviation_of(element)
-      element == EMPTY ? 0 : Float::INFINITY
+    def deviation_of(_)
+      fail 'deviation_of is undefined for empty time frame'
     end
 
     def &(_other)

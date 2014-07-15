@@ -34,9 +34,8 @@ class TimeFrame
   def deviation_of(item)
     case
     when item.respond_to?(:min) && item.respond_to?(:max)
-      item.empty? ? Float::INFINITY : [
-        deviation_of(item.min), deviation_of(item.max)
-      ].min_by(&:abs)
+      fail ArgumentError, 'time frame is empty' if item.empty?
+      [deviation_of(item.min), deviation_of(item.max)].min_by(&:abs)
     when cover?(item)
       0
     else
