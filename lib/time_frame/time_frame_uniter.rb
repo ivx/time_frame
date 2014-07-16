@@ -4,7 +4,7 @@ class TimeFrame
   # the min Time value.
   class Uniter
     def initialize(time_frames, options = {})
-      @time_frames = time_frames
+      @time_frames = time_frames.reject(&:empty?)
       @sorted = options[:sorted]
     end
 

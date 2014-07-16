@@ -8,8 +8,8 @@ class TimeFrame
   # * requires each of the arrays to be sorted
   class Overlaps
     def initialize(array1, array2)
-      @array1 = array1.dup
-      @array2 = array2.dup
+      @array1 = array1.reject(&:empty?)
+      @array2 = array2.reject(&:empty?)
     end
 
     def each(&block)

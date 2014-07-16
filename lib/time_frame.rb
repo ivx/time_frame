@@ -1,7 +1,9 @@
 # Encoding: utf-8
 require 'active_support'
 require 'active_support/core_ext'
+require 'singleton'
 
+require 'time_frame/empty'
 require 'time_frame/time_frame_splitter'
 require 'time_frame/time_frame_covered'
 require 'time_frame/time_frame_overlaps'
