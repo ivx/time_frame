@@ -1095,4 +1095,72 @@ describe TimeFrame do
       expect(TimeFrame::EMPTY.inspect).to eq 'EMPTY'
     end
   end
+
+  describe '#before?' do
+    it 'returns false if time is before time frame' do
+      time = Time.new(2012, 2, 1)
+      time_frame = TimeFrame.new(min: time, duration: 3.hours)
+      some_time = time - 1.hour
+      expect(time_frame.before?(some_time)).to be false
+    end
+
+    it 'returns false if time is on time frame min value' do
+      time_frame = TimeFrame.new(min: time, duration: 3.hours)
+      expect(time_frame.before?(time)).to be false
+    end
+
+    it 'returns false if time is on time frame max value' do
+      time = Time.new(2012, 2, 1)
+      time_frame = TimeFrame.new(min: time - 1.hour, max: time)
+      expect(time_frame.before?(time)).to be false
+    end
+
+    it 'returns false if time is covered by time frame' do
+      time = Time.new(2012, 2, 1)
+      time_frame = TimeFrame.new(min: time, duration: 3.hours)
+      some_time = time + 2.hours
+      expect(time_frame.before?(some_time)).to be false
+    end
+
+    it 'returns true if time is behind time frame max value' do
+      time = Time.new(2012, 2, 1)
+      time_frame = TimeFrame.new(min: time, duration: 3.hours)
+      some_time = time + 10.hours
+      expect(time_frame.before?(some_time)).to be true
+    end
+  end
+
+  describe '#after?' do
+    it 'returns true if time is before time frame' do
+      time = Time.new(2012, 2, 1)
+      time_frame = TimeFrame.new(min: time, duration: 3.hours)
+      some_time = time - 1.hour
+      expect(time_frame.after?(some_time)).to be true
+    end
+
+    it 'returns false if time is on time frame min value' do
+      time_frame = TimeFrame.new(min: time, duration: 3.hours)
+      expect(time_frame.after?(time)).to be false
+    end
+
+    it 'returns false if time is on time frame max value' do
+      time = Time.new(2012, 2, 1)
+      time_frame = TimeFrame.new(min: time - 1.hour, max: time)
+      expect(time_frame.after?(time)).to be false
+    end
+
+    it 'returns false if time is covered by time frame' do
+      time = Time.new(2012, 2, 1)
+      time_frame = TimeFrame.new(min: time, duration: 3.hours)
+      some_time = time + 2.hours
+      expect(time_frame.after?(some_time)).to be false
+    end
+
+    it 'returns false if time is behind time frame max value' do
+      time = Time.new(2012, 2, 1)
+      time_frame = TimeFrame.new(min: time, duration: 3.hours)
+      some_time = time + 10.hours
+      expect(time_frame.after?(some_time)).to be false
+    end
+  end
 end
