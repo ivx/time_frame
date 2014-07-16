@@ -32,15 +32,14 @@ class TimeFrame
   end
 
   def deviation_of(item)
-    if item.respond_to?(:min) && item.respond_to?(:max)
+    case
+    when item.respond_to?(:min) && item.respond_to?(:max)
       fail ArgumentError, 'time frame is empty' if item.empty?
       [deviation_of(item.min), deviation_of(item.max)].min_by(&:abs)
-    elsif cover?(item)
+    when cover?(item)
       0
-    elsif item < min
-      item - min
     else
-      item - max
+      [(item - min).abs, (item - max).abs].min
     end
   end
 
