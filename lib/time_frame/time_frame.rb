@@ -49,7 +49,7 @@ class TimeFrame
     case
     when rangy?(item)
       fail_if_empty item
-      item.min < min
+      item.max < min
     else
       item < min
     end
