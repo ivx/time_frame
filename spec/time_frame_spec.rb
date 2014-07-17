@@ -276,7 +276,7 @@ describe TimeFrame do
     end
   end
 
-  describe '#deviation_of' do
+  describe '#time_between' do
     let(:time_frame) do
       TimeFrame.new(min: Time.zone.local(2012), duration: 2.days)
     end
@@ -284,29 +284,29 @@ describe TimeFrame do
       describe 'when self covers time' do
         context 'and time equals min' do
           let(:time) { time_frame.min }
-          subject { time_frame.deviation_of(time) }
+          subject { time_frame.time_between(time) }
           it { should eq 0.minutes }
         end
         context 'and time equals max' do
           let(:time) { time_frame.max }
-          subject { time_frame.deviation_of(time) }
+          subject { time_frame.time_between(time) }
           it { should eq 0.minutes }
         end
         context 'and time is an interior point of self' do
           let(:time) { time_frame.min + (time_frame.duration / 2.0) }
-          subject { time_frame.deviation_of(time) }
+          subject { time_frame.time_between(time) }
           it { should eq 0.minutes }
         end
       end
       context 'when self do not cover time' do
         context 'and time is smaller than the left bound' do
           let(:time) { time_frame.min - 42.hours - 42.minutes }
-          subject { time_frame.deviation_of(time) }
+          subject { time_frame.time_between(time) }
           it { should eq(42.hours + 42.minutes) }
         end
         context 'and time is greater than the right bound' do
           let(:time) { time_frame.max + 42.hours + 42.minutes }
-          subject { time_frame.deviation_of(time) }
+          subject { time_frame.time_between(time) }
           it { should eq 42.hours + 42.minutes }
         end
       end
@@ -315,40 +315,40 @@ describe TimeFrame do
       describe 'when self overlaps other' do
         context 'and its partly' do
           let(:other) { time_frame.shift_by(time_frame.duration / 2) }
-          subject { time_frame.deviation_of(other) }
+          subject { time_frame.time_between(other) }
           it { should eq 0.minutes }
         end
         context 'and time equals max' do
           let(:other) { time_frame }
-          subject { time_frame.deviation_of(other) }
+          subject { time_frame.time_between(other) }
           it { should eq 0.minutes }
         end
         context 'and other lies in the interior of self' do
           let(:other) do
             TimeFrame.new(min: time_frame.min + 1.hour, duration: 1.hour)
           end
-          subject { time_frame.deviation_of(other) }
+          subject { time_frame.time_between(other) }
           it { should eq 0.minutes }
         end
       end
       context 'when self do not cover time' do
         context 'and time is smaller than the left bound' do
           let(:other) { time_frame.shift_by(-2.days - 42.seconds) }
-          subject { time_frame.deviation_of(other) }
+          subject { time_frame.time_between(other) }
           it { should eq(42.seconds) }
         end
         context 'and time is greater than the right bound' do
           let(:other) { time_frame.shift_by(2.days + 42.seconds) }
-          subject { time_frame.deviation_of(other) }
+          subject { time_frame.time_between(other) }
           it { should eq 42.seconds }
         end
       end
       it 'fails when only argument is empty' do
-        expect(-> { time_frame.deviation_of(TimeFrame::EMPTY) })
+        expect(-> { time_frame.time_between(TimeFrame::EMPTY) })
           .to raise_error ArgumentError
       end
       it 'fails when only self is empty' do
-        expect(-> { TimeFrame::EMPTY.deviation_of(time_frame) })
+        expect(-> { TimeFrame::EMPTY.time_between(time_frame) })
           .to raise_error TypeError
       end
     end

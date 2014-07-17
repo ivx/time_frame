@@ -55,11 +55,11 @@ class TimeFrame
     end
   end
 
-  def deviation_of(item)
+  def time_between(item)
     case
     when rangy?(item)
       fail_if_empty item
-      [deviation_of(item.min), deviation_of(item.max)].min_by(&:abs)
+      [time_between(item.min), time_between(item.max)].min_by(&:abs)
     when cover?(item)
       0
     else
