@@ -1,4 +1,8 @@
 # Encoding: utf-8
+
+# Temporary disable class length cop.
+# rubocop:disable Style/ClassLength
+
 # The time frame class provides an specialized and enhanced range for time
 # values.
 class TimeFrame
@@ -24,23 +28,42 @@ class TimeFrame
   end
 
   def cover?(element)
-    if element.respond_to?(:min) && element.respond_to?(:max)
+    if rangy?(element)
       element.empty? || min <= element.min && element.max <= max
     else
       min <= element && element <= max
     end
   end
 
-  def deviation_of(item)
-    if item.respond_to?(:min) && item.respond_to?(:max)
-      fail ArgumentError, 'time frame is empty' if item.empty?
-      [deviation_of(item.min), deviation_of(item.max)].min_by(&:abs)
-    elsif cover?(item)
-      0
-    elsif item < min
-      item - min
+  def before?(item)
+    case
+    when rangy?(item)
+      fail_if_empty item
+      item.min > max
     else
-      item - max
+      item > max
+    end
+  end
+
+  def after?(item)
+    case
+    when rangy?(item)
+      fail_if_empty item
+      item.max < min
+    else
+      item < min
+    end
+  end
+
+  def time_between(item)
+    case
+    when rangy?(item)
+      fail_if_empty item
+      [time_between(item.min), time_between(item.max)].min_by(&:abs)
+    when cover?(item)
+      0
+    else
+      [(item - min).abs, (item - max).abs].min
     end
   end
 
@@ -124,7 +147,18 @@ class TimeFrame
 
   private
 
+  def fail_if_empty(item)
+    fail ArgumentError, 'time frame is empty' if item.respond_to?(:empty) &&
+        item.empty?
+  end
+
+  def rangy?(item)
+    item.respond_to?(:min) && item.respond_to?(:max)
+  end
+
   def check_bounds(max, min)
     fail ArgumentError, 'min is greater than max.' if min > max
   end
 end
+
+# rubocop:enable Style/ClassLength

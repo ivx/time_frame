@@ -276,7 +276,7 @@ describe TimeFrame do
     end
   end
 
-  describe '#deviation_of' do
+  describe '#time_between' do
     let(:time_frame) do
       TimeFrame.new(min: Time.zone.local(2012), duration: 2.days)
     end
@@ -284,29 +284,29 @@ describe TimeFrame do
       describe 'when self covers time' do
         context 'and time equals min' do
           let(:time) { time_frame.min }
-          subject { time_frame.deviation_of(time) }
+          subject { time_frame.time_between(time) }
           it { should eq 0.minutes }
         end
         context 'and time equals max' do
           let(:time) { time_frame.max }
-          subject { time_frame.deviation_of(time) }
+          subject { time_frame.time_between(time) }
           it { should eq 0.minutes }
         end
         context 'and time is an interior point of self' do
           let(:time) { time_frame.min + (time_frame.duration / 2.0) }
-          subject { time_frame.deviation_of(time) }
+          subject { time_frame.time_between(time) }
           it { should eq 0.minutes }
         end
       end
       context 'when self do not cover time' do
         context 'and time is smaller than the left bound' do
           let(:time) { time_frame.min - 42.hours - 42.minutes }
-          subject { time_frame.deviation_of(time) }
-          it { should eq(-42.hours - 42.minutes) }
+          subject { time_frame.time_between(time) }
+          it { should eq(42.hours + 42.minutes) }
         end
         context 'and time is greater than the right bound' do
           let(:time) { time_frame.max + 42.hours + 42.minutes }
-          subject { time_frame.deviation_of(time) }
+          subject { time_frame.time_between(time) }
           it { should eq 42.hours + 42.minutes }
         end
       end
@@ -315,40 +315,40 @@ describe TimeFrame do
       describe 'when self overlaps other' do
         context 'and its partly' do
           let(:other) { time_frame.shift_by(time_frame.duration / 2) }
-          subject { time_frame.deviation_of(other) }
+          subject { time_frame.time_between(other) }
           it { should eq 0.minutes }
         end
         context 'and time equals max' do
           let(:other) { time_frame }
-          subject { time_frame.deviation_of(other) }
+          subject { time_frame.time_between(other) }
           it { should eq 0.minutes }
         end
         context 'and other lies in the interior of self' do
           let(:other) do
             TimeFrame.new(min: time_frame.min + 1.hour, duration: 1.hour)
           end
-          subject { time_frame.deviation_of(other) }
+          subject { time_frame.time_between(other) }
           it { should eq 0.minutes }
         end
       end
       context 'when self do not cover time' do
         context 'and time is smaller than the left bound' do
           let(:other) { time_frame.shift_by(-2.days - 42.seconds) }
-          subject { time_frame.deviation_of(other) }
-          it { should eq(-42.seconds) }
+          subject { time_frame.time_between(other) }
+          it { should eq(42.seconds) }
         end
         context 'and time is greater than the right bound' do
           let(:other) { time_frame.shift_by(2.days + 42.seconds) }
-          subject { time_frame.deviation_of(other) }
+          subject { time_frame.time_between(other) }
           it { should eq 42.seconds }
         end
       end
       it 'fails when only argument is empty' do
-        expect(-> { time_frame.deviation_of(TimeFrame::EMPTY) })
+        expect(-> { time_frame.time_between(TimeFrame::EMPTY) })
           .to raise_error ArgumentError
       end
       it 'fails when only self is empty' do
-        expect(-> { TimeFrame::EMPTY.deviation_of(time_frame) })
+        expect(-> { TimeFrame::EMPTY.time_between(time_frame) })
           .to raise_error TypeError
       end
     end
@@ -1093,6 +1093,160 @@ describe TimeFrame do
 
     it 'is overridden for empty time frames' do
       expect(TimeFrame::EMPTY.inspect).to eq 'EMPTY'
+    end
+  end
+
+  describe '#before?' do
+    context 'when dealing with Time instances' do
+      it 'returns false if time is before time frame' do
+        time = Time.new(2012, 2, 1)
+        time_frame = TimeFrame.new(min: time, duration: 3.hours)
+        some_time = time - 1.hour
+        expect(time_frame.before?(some_time)).to be false
+      end
+
+      it 'returns false if time is on time frame min value' do
+        time_frame = TimeFrame.new(min: time, duration: 3.hours)
+        expect(time_frame.before?(time)).to be false
+      end
+
+      it 'returns false if time is on time frame max value' do
+        time = Time.new(2012, 2, 1)
+        time_frame = TimeFrame.new(min: time - 1.hour, max: time)
+        expect(time_frame.before?(time)).to be false
+      end
+
+      it 'returns false if time is covered by time frame' do
+        time = Time.new(2012, 2, 1)
+        time_frame = TimeFrame.new(min: time, duration: 3.hours)
+        some_time = time + 2.hours
+        expect(time_frame.before?(some_time)).to be false
+      end
+
+      it 'returns true if time is behind time frame max value' do
+        time = Time.new(2012, 2, 1)
+        time_frame = TimeFrame.new(min: time, duration: 3.hours)
+        some_time = time + 10.hours
+        expect(time_frame.before?(some_time)).to be true
+      end
+    end
+
+    context 'when dealing with TimeFrame instances' do
+      it 'returns false if time frame in question is before time frame' do
+        time_frame = TimeFrame.new(min: Time.new(2012, 2, 1), duration: 2.hours)
+        other = TimeFrame.new(min: Time.new(2011), duration: 1.hour)
+        expect(time_frame.before?(other)).to be false
+      end
+
+      it 'returns false if time frame in question ends on min value' do
+        time_frame = TimeFrame.new(min: Time.new(2012, 2, 1), duration: 2.hours)
+        other = TimeFrame.new(min: Time.new(2011), max: time_frame.min)
+        expect(time_frame.before?(other)).to be false
+      end
+
+      it 'returns false if time frame in question is covered by frame' do
+        time_frame = TimeFrame.new(min: Time.new(2012, 2, 1), duration: 2.hours)
+        other = TimeFrame.new(
+          min: time_frame.min + 1.hour,
+          max: time_frame.min + 2.hours
+        )
+        expect(time_frame.before?(other)).to be false
+      end
+
+      it 'returns false if time frame in question starts at max' do
+        time_frame = TimeFrame.new(min: Time.new(2012, 2, 1), duration: 2.hours)
+        other = TimeFrame.new(
+          min: time_frame.max,
+          max: time_frame.max + 2.hours
+        )
+        expect(time_frame.before?(other)).to be false
+      end
+
+      it 'returns true if time frame in question lies after time frame' do
+        time_frame = TimeFrame.new(min: Time.new(2012, 2, 1), duration: 2.hours)
+        other = TimeFrame.new(
+          min: time_frame.max + 1.hour,
+          max: time_frame.max + 2.hours
+        )
+        expect(time_frame.before?(other)).to be true
+      end
+    end
+  end
+
+  describe '#after?' do
+    context 'when dealing with Time instances' do
+      it 'returns true if time is before time frame' do
+        time = Time.new(2012, 2, 1)
+        time_frame = TimeFrame.new(min: time, duration: 3.hours)
+        some_time = time - 1.hour
+        expect(time_frame.after?(some_time)).to be true
+      end
+
+      it 'returns false if time is on time frame min value' do
+        time_frame = TimeFrame.new(min: time, duration: 3.hours)
+        expect(time_frame.after?(time)).to be false
+      end
+
+      it 'returns false if time is on time frame max value' do
+        time = Time.new(2012, 2, 1)
+        time_frame = TimeFrame.new(min: time - 1.hour, max: time)
+        expect(time_frame.after?(time)).to be false
+      end
+
+      it 'returns false if time is covered by time frame' do
+        time = Time.new(2012, 2, 1)
+        time_frame = TimeFrame.new(min: time, duration: 3.hours)
+        some_time = time + 2.hours
+        expect(time_frame.after?(some_time)).to be false
+      end
+
+      it 'returns false if time is behind time frame max value' do
+        time = Time.new(2012, 2, 1)
+        time_frame = TimeFrame.new(min: time, duration: 3.hours)
+        some_time = time + 10.hours
+        expect(time_frame.after?(some_time)).to be false
+      end
+    end
+
+    context 'when dealing with TimeFrame instances' do
+      it 'returns false if time frame in question is after time frame' do
+        time_frame = TimeFrame.new(min: Time.new(2012, 2, 1), duration: 2.hours)
+        other = TimeFrame.new(min: Time.new(2014), duration: 1.hour)
+        expect(time_frame.after?(other)).to be false
+      end
+
+      it 'returns false if time frame in question ends on min value' do
+        time_frame = TimeFrame.new(min: Time.new(2012, 2, 1), duration: 2.hours)
+        other = TimeFrame.new(min: Time.new(2011), max: time_frame.min)
+        expect(time_frame.after?(other)).to be false
+      end
+
+      it 'returns false if time frame in question is covered by frame' do
+        time_frame = TimeFrame.new(min: Time.new(2012, 2, 1), duration: 2.hours)
+        other = TimeFrame.new(
+          min: time_frame.min + 1.hour,
+          max: time_frame.min + 2.hours
+        )
+        expect(time_frame.after?(other)).to be false
+      end
+
+      it 'returns false if time frame in question starts at max' do
+        time_frame = TimeFrame.new(min: Time.new(2012, 2, 1), duration: 2.hours)
+        other = TimeFrame.new(
+          min: time_frame.max,
+          max: time_frame.max + 2.hours
+        )
+        expect(time_frame.after?(other)).to be false
+      end
+
+      it 'returns true if time frame in question is before time frame' do
+        time_frame = TimeFrame.new(min: Time.new(2012, 2, 1), duration: 2.hours)
+        other = TimeFrame.new(
+          min: time_frame.min - 10.hours,
+          max: time_frame.min - 5.hours
+        )
+        expect(time_frame.after?(other)).to be true
+      end
     end
   end
 end

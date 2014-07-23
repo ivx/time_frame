@@ -15,8 +15,8 @@ class TimeFrame
       true
     end
 
-    def deviation_of(_)
-      fail TypeError, 'deviation_of is undefined for empty time frame'
+    def time_between(_)
+      fail TypeError, 'time_between is undefined for empty time frame'
     end
 
     def &(_other)
