@@ -5,4 +5,5 @@ gemspec
 
 group :development, :test do
   gem 'geminabox'
+  gem 'byebug'
 end

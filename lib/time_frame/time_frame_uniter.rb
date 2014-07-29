@@ -10,12 +10,13 @@ class TimeFrame
 
     def unite
       frames = @sorted ? @time_frames : @time_frames.sort_by(&:min)
-      frames.each_with_object([]) do |frame, result|
-        last_frame = result.last
-        if last_frame && last_frame.cover?(frame.min)
-          result[-1] = TimeFrame.new(min: last_frame.min, max: frame.max)
+      frames.each_with_object([]) do |next_time_frame, result|
+        last_time_frame = result.last
+        if last_time_frame && last_time_frame.cover?(next_time_frame.min)
+          max = [last_time_frame.max, next_time_frame.max].max
+          result[-1] = TimeFrame.new(min: last_time_frame.min, max: max)
         else
-          result << frame
+          result << next_time_frame
         end
       end
     end
