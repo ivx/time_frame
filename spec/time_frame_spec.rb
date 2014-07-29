@@ -395,6 +395,15 @@ describe TimeFrame do
             subject { TimeFrame.union([time_frame1, time_frame2]) }
             it { should eq expected }
           end
+          context 'that are overlapping and first contains the second' do
+            let(:time_frame1) { TimeFrame.new(min: time, duration: 3.hours) }
+            let(:time_frame2) do
+              TimeFrame.new(min: time + 1.hour, duration: 1.hour)
+            end
+            let(:expected) { [time_frame1] }
+            subject { TimeFrame.union([time_frame1, time_frame2]) }
+            it { should eq expected }
+          end
           context 'that are disjoint' do
             let(:time_frame1) { TimeFrame.new(min: time, duration: 2.hours) }
             let(:time_frame2) { time_frame1.shift_by(3.hours) }
