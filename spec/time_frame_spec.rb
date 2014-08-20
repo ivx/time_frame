@@ -77,6 +77,17 @@ describe TimeFrame do
           subject { super().max }
           it { should eq time }
         end
+
+        context 'when min is a date' do
+          context 'and duration is 0' do
+            it 'should be valid' do
+              expect do
+                TimeFrame.new(min: Date.new(2012), duration: 0.seconds)
+              end.not_to raise_error
+            end
+          end
+        end
+
       end
       context 'and time sframe covers a DST shift' do
         let(:time) do
