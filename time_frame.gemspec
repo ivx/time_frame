@@ -28,7 +28,6 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency 'rake', '~> 10.3.2'
   spec.add_development_dependency 'rspec', '~> 3.0.0'
-  spec.add_development_dependency 'bundler', '~> 1.6.1'
   spec.add_development_dependency 'simplecov', '~> 0.8.2'
   spec.add_development_dependency 'rubocop', '~> 0.23.0'
   spec.add_dependency 'activesupport', '~> 4.1.1'
