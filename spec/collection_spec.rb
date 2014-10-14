@@ -5,6 +5,15 @@ describe TimeFrame::Collection do
   let(:time_frame) { TimeFrame.new(min: Time.utc(2014), duration: 20.days) }
   let(:time) { Time.utc(2014) }
 
+  describe '#each' do
+    it 'has map implemented' do
+      time_frames = 20.times.map { |i| time_frame.shift_by((5 * i).days) }
+      objects = time_frames.map { |tf| OpenStruct.new(interval: tf) }
+      tree = TimeFrame::Collection.new(objects) { |o| o.interval }
+      expect(tree.map { |item| item.interval }).to eq time_frames
+    end
+  end
+
   describe '#all_covering' do
     context 'when a pure time_frame tree is given' do
       it 'returns all covering time_frames' do

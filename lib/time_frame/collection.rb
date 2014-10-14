@@ -19,7 +19,7 @@ class TimeFrame
     end
 
     def each(&block)
-      tree_nodes.each(&block)
+      tree_nodes.map { |node| node.item }.each(&block)
     end
 
     def all_covering(time)
