@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Collection do
+describe TimeFrame::Collection do
 
   let(:time_frame) { TimeFrame.new(min: Time.utc(2014), duration: 20.days) }
   let(:time) { Time.utc(2014) }
@@ -9,7 +9,7 @@ describe Collection do
     context 'when a pure time_frame tree is given' do
       it 'returns all covering time_frames' do
         time_frames = 20.times.map { |i| time_frame.shift_by((5 * i).days) }
-        tree = Collection.new(time_frames)
+        tree = TimeFrame::Collection.new(time_frames)
 
         result = tree.all_covering(time)
         expected_result = time_frames.select { |t| t.cover?(time) }
@@ -44,7 +44,7 @@ describe Collection do
         objects = 20.times.map do |i|
           OpenStruct.new(time_frame: time_frame.shift_by((5 * i).days))
         end
-        tree = Collection.new(objects) { |item| item.time_frame }
+        tree = TimeFrame::Collection.new(objects) { |item| item.time_frame }
 
         result = tree.all_covering(time - 1.day)
         expect(result).to eq []
@@ -83,7 +83,7 @@ describe Collection do
     context 'when a pure time_frame tree is given' do
       it 'returns all intersecting time_frames' do
         time_frames = 20.times.map { |i| time_frame.shift_by((5 * i).days) }
-        tree = Collection.new(time_frames)
+        tree = TimeFrame::Collection.new(time_frames)
         interval = TimeFrame.new(min: time, duration: 1.hour)
 
         result = tree.all_intersecting(interval.shift_by((-1).day))
@@ -133,7 +133,7 @@ describe Collection do
         objects = 20.times.map do |i|
           OpenStruct.new(time_frame: time_frame.shift_by((5 * i).days))
         end
-        tree = Collection.new(objects) { |item| item.time_frame }
+        tree = TimeFrame::Collection.new(objects) { |item| item.time_frame }
         interval = TimeFrame.new(min: time, duration: 1.hour)
 
         result = tree.all_intersecting(interval.shift_by((-1).day))
