@@ -45,7 +45,7 @@ class Collection
     build_tree(lower, mid - 1, node, :left) unless lower == mid
     build_tree(mid + 1, upper, node, :right) unless upper == mid
 
-    node.update_child_range(node.min_child, node.max_child) if lower == upper
+    node.update_child_frame(node.child_time_frame) if lower == upper
   end
 
   def add_covering(time, node, result)
