@@ -5,6 +5,7 @@ class TimeFrame
   # access speed to intervals (or objects containing intervals) intersecting
   # given time_frames or covering time elements
   class Collection
+    include Enumerable
     attr_reader :tree_nodes, :root
     def initialize(item_list = [], sorted = false, &block)
       @block = block ? block : ->(item) { item }
@@ -15,6 +16,10 @@ class TimeFrame
       sort_list(@tree_nodes) unless sorted
       build_tree(0, @tree_nodes.size - 1)
       @root = @tree_nodes[(@tree_nodes.size - 1) / 2]
+    end
+
+    def each(&block)
+      tree_nodes.each(&block)
     end
 
     def all_covering(time)
