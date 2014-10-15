@@ -4,6 +4,7 @@ SimpleCov.start do
   add_filter '/spec/'
 end
 
+require 'byebug'
 require 'time_frame'
 
 Time.zone ||= 'UTC'

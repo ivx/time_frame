@@ -12,4 +12,5 @@ require 'time_frame/time_frame_uniter'
 require 'time_frame/time_frame'
 
 require 'time_frame/tree_node'
+require 'time_frame/tree'
 require 'time_frame/collection'

@@ -8,18 +8,17 @@ class TimeFrame
     include Enumerable
     delegate :size, to: :@tree_nodes
     attr_reader :tree_nodes, :root
-    def initialize(item_list = [], sorted = false, &block)
+    def initialize(item_list = [], &block)
       @block = block ? block : ->(item) { item }
-      @tree_nodes = item_list.map do |item|
-        TreeNode.new(item: item, &@block)
-      end
+      @tree = Tree.new
+      item_list.each { |item| @tree.add(item, @block) }
 
-      sort_list(@tree_nodes) unless sorted
-      build_tree(0, @tree_nodes.size - 1)
-      @root = @tree_nodes[(@tree_nodes.size - 1) / 2]
+      # sort_list(@tree_nodes) unless sorted
+      # build_tree(0, @tree_nodes.size - 1)
+      # @root = @tree_nodes[(@tree_nodes.size - 1) / 2]
 
-      # set recurvively all children time frames:
-      @root.children_frame
+      # # set recurvively all children time frames:
+      # @root.children_frame
     end
 
     def each(&block)
