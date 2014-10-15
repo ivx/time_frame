@@ -6,6 +6,7 @@ class TimeFrame
   # given time_frames or covering time elements
   class Collection
     include Enumerable
+    delegate :size, to: :@tree_nodes
     attr_reader :tree_nodes, :root
     def initialize(item_list = [], sorted = false, &block)
       @block = block ? block : ->(item) { item }
@@ -16,22 +17,25 @@ class TimeFrame
       sort_list(@tree_nodes) unless sorted
       build_tree(0, @tree_nodes.size - 1)
       @root = @tree_nodes[(@tree_nodes.size - 1) / 2]
+
+      # set recurvively all children time frames:
+      @root.children_frame
     end
 
     def each(&block)
-      tree_nodes.map { |node| node.item }.each(&block)
+      tree_nodes.each { |node| block.call(node.item) }
     end
 
     def all_covering(time)
       result = []
       add_covering(time, @root, result)
-      result.sort_by { |item | [@block.call(item).min, @block.call(item).max] }
+      result
     end
 
     def all_intersecting(time_frame)
       result = []
       add_intersecting(time_frame, @root, result)
-      result.sort_by { |item | [@block.call(item).min, @block.call(item).max] }
+      result
     end
 
     private
@@ -50,8 +54,6 @@ class TimeFrame
 
       build_tree(lower, mid - 1, node, :left) unless lower == mid
       build_tree(mid + 1, upper, node, :right) unless upper == mid
-
-      node.update_child_frame(node.child_time_frame) if lower == upper
     end
 
     def add_covering(time, node, result)

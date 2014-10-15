@@ -29,19 +29,23 @@ describe TimeFrame::Collection do
 
         result = tree.all_covering(time + 5.days)
         expected_result = time_frames.select { |t| t.cover?(time + 5.days) }
-        expect(result).to eq expected_result
+        expect(result.size).to eq expected_result.size
+        expected_result.each { |item| expect(result).to include(item) }
 
         result = tree.all_covering(time + 7.days)
         expected_result = time_frames.select { |t| t.cover?(time + 7.days) }
-        expect(result).to eq expected_result
+        expect(result.size).to eq expected_result.size
+        expected_result.each { |item| expect(result).to include(item) }
 
         result = tree.all_covering(time + 17.days)
         expected_result = time_frames.select { |t| t.cover?(time + 17.days) }
-        expect(result).to eq expected_result
+        expect(result.size).to eq expected_result.size
+        expected_result.each { |item| expect(result).to include(item) }
 
         result = tree.all_covering(time + 42.days)
         expected_result = time_frames.select { |t| t.cover?(time + 42.days) }
-        expect(result).to eq expected_result
+        expect(result.size).to eq expected_result.size
+        expected_result.each { |item| expect(result).to include(item) }
 
         result = tree.all_covering(time + 300.days)
         expect(result).to eq []
@@ -62,25 +66,29 @@ describe TimeFrame::Collection do
         expected_result = objects.select do |t|
           t.time_frame.cover?(time + 5.days)
         end
-        expect(result).to eq expected_result
+        expect(result.size).to eq expected_result.size
+        expected_result.each { |item| expect(result).to include(item) }
 
         result = tree.all_covering(time + 7.days)
         expected_result = objects.select do |t|
           t.time_frame.cover?(time + 7.days)
         end
-        expect(result).to eq expected_result
+        expect(result.size).to eq expected_result.size
+        expected_result.each { |item| expect(result).to include(item) }
 
         result = tree.all_covering(time + 17.days)
         expected_result = objects.select do |t|
           t.time_frame.cover?(time + 17.days)
         end
-        expect(result).to eq expected_result
+        expect(result.size).to eq expected_result.size
+        expected_result.each { |item| expect(result).to include(item) }
 
         result = tree.all_covering(time + 42.days)
         expected_result = objects.select do |t|
           t.time_frame.cover?(time + 42.days)
         end
-        expect(result).to eq expected_result
+        expect(result.size).to eq expected_result.size
+        expected_result.each { |item| expect(result).to include(item) }
 
         result = tree.all_covering(time + 300.days)
         expect(result).to eq []
@@ -102,35 +110,40 @@ describe TimeFrame::Collection do
         expected_result = time_frames.select do |t|
           !(t & (interval)).empty?
         end
-        expect(result).to eq expected_result
+        expect(result.size).to eq expected_result.size
+        expected_result.each { |item| expect(result).to include(item) }
 
         this_interval = interval.shift_by(5.days)
         result = tree.all_intersecting(this_interval)
         expected_result = time_frames.select do |t|
           !(t & (this_interval)).empty?
         end
-        expect(result).to eq expected_result
+        expect(result.size).to eq expected_result.size
+        expected_result.each { |item| expect(result).to include(item) }
 
         this_interval = interval.shift_by(7.days)
         result = tree.all_intersecting(this_interval)
         expected_result = time_frames.select do |t|
           !(t & (this_interval)).empty?
         end
-        expect(result).to eq expected_result
+        expect(result.size).to eq expected_result.size
+        expected_result.each { |item| expect(result).to include(item) }
 
         this_interval = interval.shift_by(17.days)
         result = tree.all_intersecting(this_interval)
         expected_result = time_frames.select do |t|
           !(t & (this_interval)).empty?
         end
-        expect(result).to eq expected_result
+        expect(result.size).to eq expected_result.size
+        expected_result.each { |item| expect(result).to include(item) }
 
         this_interval = interval.shift_by(42.days)
         result = tree.all_intersecting(this_interval)
         expected_result = time_frames.select do |t|
           !(t & (this_interval)).empty?
         end
-        expect(result).to eq expected_result
+        expect(result.size).to eq expected_result.size
+        expected_result.each { |item| expect(result).to include(item) }
 
         result = tree.all_intersecting(interval.shift_by(300.days))
         expect(result).to eq []
@@ -152,39 +165,43 @@ describe TimeFrame::Collection do
         expected_result = objects.select do |object|
           !(object.time_frame & (interval)).empty?
         end
-        expect(result).to eq expected_result
+        expect(result.size).to eq expected_result.size
+        expected_result.each { |item| expect(result).to include(item) }
 
         this_interval = interval.shift_by(5.days)
         result = tree.all_intersecting(this_interval)
         expected_result = objects.select do |object|
           !(object.time_frame & (this_interval)).empty?
         end
-        expect(result).to eq expected_result
+        expect(result.size).to eq expected_result.size
+        expected_result.each { |item| expect(result).to include(item) }
 
         this_interval = interval.shift_by(7.days)
         result = tree.all_intersecting(this_interval)
         expected_result = objects.select do |object|
           !(object.time_frame & (this_interval)).empty?
         end
-        expect(result).to eq expected_result
+        expect(result.size).to eq expected_result.size
+        expected_result.each { |item| expect(result).to include(item) }
 
         this_interval = interval.shift_by(17.days)
         result = tree.all_intersecting(this_interval)
         expected_result = objects.select do |object|
           !(object.time_frame & (this_interval)).empty?
         end
-        expect(result).to eq expected_result
+        expect(result.size).to eq expected_result.size
+        expected_result.each { |item| expect(result).to include(item) }
 
         this_interval = interval.shift_by(42.days)
         result = tree.all_intersecting(this_interval)
         expected_result = objects.select do |object|
           !(object.time_frame & (this_interval)).empty?
         end
-        expect(result).to eq expected_result
+        expect(result.size).to eq expected_result.size
+        expected_result.each { |item| expect(result).to include(item) }
 
         result = tree.all_intersecting(interval.shift_by(300.days))
         expect(result).to eq []
-
       end
     end
   end

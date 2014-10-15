@@ -13,9 +13,6 @@ class TimeFrame
         @ancestor = args.fetch(:ancestor, nil)
         @left_child = args.fetch(:left_child, nil)
         @right_child = args.fetch(:right_child, nil)
-
-        # if block is given use it to get item's time frame
-        @child_time_frame = @time_frame
       end
 
       def update_ancestor_relation(new_ancestor, side)
@@ -49,6 +46,12 @@ class TimeFrame
         right_child &&
         right_child.child_time_frame.min <= interval.max &&
         right_child.child_time_frame.max >= interval.min
+      end
+
+      def children_frame
+        min = left_child ? left_child.children_frame.min : time_frame.min
+        max = right_child ? right_child.children_frame.max : time_frame.max
+        @child_time_frame ||= TimeFrame.new(min: min, max: max)
       end
     end
   end
