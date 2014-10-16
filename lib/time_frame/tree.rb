@@ -10,9 +10,8 @@ class TimeFrame
 
     def add(new_item)
       tree_node = TreeNode.new(new_item) { |node| @block.call(node) }
-      tap do |tree|
-        add_to_tree_place(tree_node)
-      end
+      add_to_tree_place(tree_node)
+      ancestor || self
     end
 
     def is_leaf?
@@ -40,12 +39,13 @@ class TimeFrame
     protected
 
     def balance_ratio
-      left = @left_child.empty? ? 0 : @left_child.height
-      right = @right_child.empty? ? 0 : @right_child.height
+      left = @left_child.empty? ? -1 : @left_child.height
+      right = @right_child.empty? ? -1 : @right_child.height
       right - left
     end
 
     def rotate_left
+      puts 'rotate left'
       current_tree_node = self
       new_tree_node = right_child
       current_ancestor = ancestor
@@ -67,6 +67,7 @@ class TimeFrame
     end
 
     def rotate_right
+      puts 'rotate right'
       current_tree_node = self
       new_tree_node = left_child
       current_ancestor = ancestor
@@ -108,6 +109,7 @@ class TimeFrame
 
     def rebalance
       ratio = balance_ratio
+      puts "ratio: #{ratio}"
       if ratio < -1
         rotate_right
       elsif ratio > 1

@@ -10,11 +10,11 @@ describe TimeFrame::Tree do
   describe 'balance_ratio and rebalancing' do
     it 'rebalance the tree when inserting new elements' do
       tree = TimeFrame::Tree.new
-      tree.add(items.first)
+      tree = tree.add(items.first)
       expect(tree.height).to eq 0
-      tree.add(items.second)
+      tree = tree.add(items.second)
       expect(tree.height).to eq 1
-      tree.add(items.third)
+      tree = tree.add(items.third)
       expect(tree.height).to eq 1
     end
   end
