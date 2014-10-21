@@ -12,9 +12,7 @@ class TimeFrame
       @tree_nodes = item_list.map do |item|
         TreeNode.new(item: item, &block)
       end
-      return if none?
-      sort_nodes unless sorted
-      build_tree
+      build_tree(sorted) if @tree_nodes.any?
     end
 
     def each(&block)
@@ -43,7 +41,8 @@ class TimeFrame
       end
     end
 
-    def build_tree
+    def build_tree(sorted)
+      sort_nodes unless sorted
       build_sub_tree(0, @tree_nodes.size - 1)
       @root = @tree_nodes[(@tree_nodes.size - 1) / 2]
     end
