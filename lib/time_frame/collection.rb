@@ -8,38 +8,40 @@ class TimeFrame
     include Enumerable
     attr_reader :tree_nodes, :root
     def initialize(item_list = [], sorted = false, &block)
-      @block = block ? block : ->(item) { item }
+      block ||= ->(item) { item }
       @tree_nodes = item_list.map do |item|
-        TreeNode.new(item: item, &@block)
+        TreeNode.new(item: item, &block)
       end
 
-      sort_list(@tree_nodes) unless sorted
-      build_tree(0, @tree_nodes.size - 1) unless none?
-      @root = @tree_nodes[(@tree_nodes.size - 1) / 2]
+      if any?
+        sort_nodes unless sorted
+        build_tree(0, @tree_nodes.size - 1) unless none?
+        @root = @tree_nodes[(@tree_nodes.size - 1) / 2]
+      end
     end
 
     def each(&block)
-      tree_nodes.each { |node| block.call(node.item) }
+      tree_nodes.each do |node|
+        block.call(node.item)
+      end
     end
 
     def all_covering(time)
-      result = []
-      return [] if none?
-      add_covering(time, @root, result)
-      result.sort_by { |item | [@block.call(item).min, @block.call(item).max] }
+      [].tap do |result|
+        add_covering(time, @root, result) if any?
+      end
     end
 
     def all_intersecting(time_frame)
-      result = []
-      return [] if none?
-      add_intersecting(time_frame, @root, result)
-      result.sort_by { |item | [@block.call(item).min, @block.call(item).max] }
+      [].tap do |result|
+        add_intersecting(time_frame, @root, result) if any?
+      end
     end
 
     private
 
-    def sort_list(item_list)
-      item_list.sort_by! do |item|
+    def sort_nodes
+      @tree_nodes.sort_by! do |item|
         [item.time_frame.min, item.time_frame.max]
       end
     end
@@ -57,21 +59,23 @@ class TimeFrame
     end
 
     def add_covering(time, node, result)
-      result << node.item if node.time_frame.cover?(time)
       if node.continue_left_side_search_for_time?(time)
         add_covering(time, node.left_child, result)
       end
-      return unless node.continue_right_side_search_for_time?(time)
-      add_covering(time, node.right_child, result)
+      result << node.item if node.time_frame.cover?(time)
+      if node.continue_right_side_search_for_time?(time)
+        add_covering(time, node.right_child, result)
+      end
     end
 
     def add_intersecting(time_frame, node, result)
-      result << node.item unless (node.time_frame & time_frame).empty?
       if node.continue_left_side_search_for_time_frame?(time_frame)
         add_intersecting(time_frame, node.left_child, result)
       end
-      return unless node.continue_right_side_search_for_time_frame?(time_frame)
-      add_intersecting(time_frame, node.right_child, result)
+      result << node.item if node.time_frame.overlaps? time_frame
+      if node.continue_right_side_search_for_time_frame?(time_frame)
+        add_intersecting(time_frame, node.right_child, result)
+      end
     end
   end
 end
