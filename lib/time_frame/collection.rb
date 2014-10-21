@@ -14,7 +14,7 @@ class TimeFrame
       end
 
       sort_list(@tree_nodes) unless sorted
-      build_tree(0, @tree_nodes.size - 1)
+      build_tree(0, @tree_nodes.size - 1) unless none?
       @root = @tree_nodes[(@tree_nodes.size - 1) / 2]
     end
 
@@ -24,12 +24,14 @@ class TimeFrame
 
     def all_covering(time)
       result = []
+      return [] if none?
       add_covering(time, @root, result)
       result.sort_by { |item | [@block.call(item).min, @block.call(item).max] }
     end
 
     def all_intersecting(time_frame)
       result = []
+      return [] if none?
       add_intersecting(time_frame, @root, result)
       result.sort_by { |item | [@block.call(item).min, @block.call(item).max] }
     end

@@ -16,6 +16,11 @@ describe TimeFrame::Collection do
 
   describe '#all_covering' do
     context 'when a pure time_frame tree is given' do
+      it 'returns an empty array if the collection is empty' do
+        collection = TimeFrame::Collection.new([])
+        expect(collection.all_covering(time)).to eq []
+      end
+
       it 'returns all covering time_frames' do
         time_frames = 20.times.map { |i| time_frame.shift_by((5 * i).days) }
         tree = TimeFrame::Collection.new(time_frames)
@@ -49,6 +54,11 @@ describe TimeFrame::Collection do
     end
 
     context 'when objects containing time_frames are given' do
+      it 'returns an empty array if the collection is empty' do
+        collection = TimeFrame::Collection.new([]) { |item| item.time_frame }
+        expect(collection.all_covering(time)).to eq []
+      end
+
       it 'returns all covering time_frames' do
         objects = 20.times.map do |i|
           OpenStruct.new(time_frame: time_frame.shift_by((5 * i).days))
@@ -90,6 +100,10 @@ describe TimeFrame::Collection do
 
   describe '#all_intersecting' do
     context 'when a pure time_frame tree is given' do
+      it 'returns an empty array if the collection is empty' do
+        collection = TimeFrame::Collection.new([])
+        expect(collection.all_intersecting(time)).to eq []
+      end
       it 'returns all intersecting time_frames' do
         time_frames = 20.times.map { |i| time_frame.shift_by((5 * i).days) }
         tree = TimeFrame::Collection.new(time_frames)
@@ -138,6 +152,10 @@ describe TimeFrame::Collection do
     end
 
     context 'when objects containing time_frames are given' do
+      it 'returns an empty array if the collection is empty' do
+        collection = TimeFrame::Collection.new([]) { |item| item.time_frame }
+        expect(collection.all_intersecting(time)).to eq []
+      end
       it 'returns all intersecting time_frames' do
         objects = 20.times.map do |i|
           OpenStruct.new(time_frame: time_frame.shift_by((5 * i).days))
