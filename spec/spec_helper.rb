@@ -21,7 +21,7 @@ ActiveRecord::Base.establish_connection(
 ActiveRecord::Schema.define do
   self.verbose = false
 
-  create_table :vogon_poems, :force => true do |t|
+  create_table :vogon_poems, force: true do |t|
     t.datetime :written_at
   end
 end

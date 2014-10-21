@@ -12,7 +12,7 @@ class TimeFrame
 
   def initialize(args)
     min = args.fetch(:min)
-    max = args.fetch(:max){ min + args.fetch(:duration) }
+    max = args.fetch(:max) { min + args.fetch(:duration) }
     check_bounds(max, min)
     @max = max
     @min = min
