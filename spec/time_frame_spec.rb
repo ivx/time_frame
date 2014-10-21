@@ -10,6 +10,18 @@ describe TimeFrame do
     I18n.enforce_available_locales = true
   end
 
+  it "should be hashable" do
+    hash = {}
+    time_frame1 = TimeFrame.new(min: time, duration: duration)
+    time_frame2 = TimeFrame.new(min: time, duration: duration)
+    time_frame3 = TimeFrame.new(min: time, duration: duration / 2)
+    time_frame4 = TimeFrame.new(min: time - duration / 2 , max: time + duration)
+    hash[time_frame1] = 1
+    expect(hash[time_frame2]).to eq 1
+    expect(hash[time_frame3]).not_to eq 1
+    expect(hash[time_frame4]).not_to eq 1
+  end
+
   describe '#min and #max' do
     context 'when given two times' do
       context 'and min is smaller than max' do

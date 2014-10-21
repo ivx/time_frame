@@ -27,6 +27,12 @@ class TimeFrame
       max == other.max
   end
 
+  alias_method :eql?, :==
+
+  def hash
+    [min, max].hash
+  end
+
   def cover?(element)
     if rangy?(element)
       element.empty? || min <= element.min && element.max <= max
