@@ -62,23 +62,21 @@ class TimeFrame
     end
 
     def add_covering(time, node, result)
-      if node.continue_left_side_search_for_time?(time)
-        add_covering(time, node.left_child, result)
-      end
+      search_left = node.continue_left_side_search_for_time?(time)
+      search_right = node.continue_right_side_search_for_time?(time)
+
+      add_covering(time, node.left_child, result) if search_left
       result << node.item if node.time_frame.cover?(time)
-      if node.continue_right_side_search_for_time?(time)
-        add_covering(time, node.right_child, result)
-      end
+      add_covering(time, node.right_child, result) if search_right
     end
 
     def add_intersecting(time_frame, node, result)
-      if node.continue_left_side_search_for_time_frame?(time_frame)
-        add_intersecting(time_frame, node.left_child, result)
-      end
+      search_left = node.continue_left_side_search_for_time_frame?(time_frame)
+      search_right = node.continue_right_side_search_for_time_frame?(time_frame)
+
+      add_intersecting(time_frame, node.left_child, result) if search_left
       result << node.item if node.time_frame.overlaps? time_frame
-      if node.continue_right_side_search_for_time_frame?(time_frame)
-        add_intersecting(time_frame, node.right_child, result)
-      end
+      add_intersecting(time_frame, node.right_child, result) if search_right
     end
   end
 end
