@@ -6,7 +6,6 @@ class TimeFrame
   # given time_frames or covering time elements
   class Collection
     include Enumerable
-    attr_reader :tree_nodes, :root
 
     def initialize(item_list = [], sorted = false, &block)
       block ||= ->(item) { item }
