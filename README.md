@@ -51,18 +51,6 @@ my_time = Time.new(2014, 5, 7, 16)
 time_frame.cover?(my_time)
 # => true
 
-# Deviation to another time?
-earlier_time = time_frame.min - 1.day
-later_time = time_frame.max + 4.days
-time_frame.deviation_of(earlier_time)
-# => -86400.0
-time_frame.deviation_of(later_time)
-# => 345600.0
-# No deviation expected here:
-time_frame.deviation_of(time_frame.min + 20.minutes)
-# => 0
-# ... yay!
-
 # Shifting to another time... duration remains:
 time_frame.shift_to(Time.new(2016, 1, 1))
 # => 2016-01-01 00:00:00 +0100..2016-01-02 00:00:00 +0100
