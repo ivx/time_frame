@@ -10,7 +10,7 @@ describe TimeFrame do
     I18n.enforce_available_locales = true
   end
 
-  it "should be hashable" do
+  it 'should be hashable' do
     hash = {}
     time_frame1 = TimeFrame.new(min: time, duration: duration)
     time_frame2 = TimeFrame.new(min: time, duration: duration)
