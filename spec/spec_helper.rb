@@ -12,3 +12,16 @@ require 'rspec'
 RSpec.configure do |config|
   config.order = 'random'
 end
+
+# active_record setup for active_record handler specs
+ActiveRecord::Base.establish_connection(
+  adapter: 'sqlite3', database: ':memory:'
+)
+
+ActiveRecord::Schema.define do
+  self.verbose = false
+
+  create_table :vogon_poems, :force => true do |t|
+    t.datetime :written_at
+  end
+end
