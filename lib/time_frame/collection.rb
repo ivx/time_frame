@@ -22,18 +22,18 @@ class TimeFrame
     end
 
     def all_covering(time)
-      find(time) { |interval, item| interval.cover? item }
+      all_matching { |element| element.cover? time }
     end
 
     def all_intersecting(time_frame)
-      find(time_frame) { |interval, item| interval.overlaps? item }
+      all_matching { |element| element.overlaps? time_frame }
     end
 
     private
 
-    def find(object, &matcher)
+    def all_matching(&matcher)
       [].tap do |result|
-        add_matching(object, @root, result, &matcher) if any?
+        add_matching(@root, result, &matcher) if any?
       end
     end
 
@@ -61,12 +61,12 @@ class TimeFrame
       node.update_child_frame(node.child_time_frame) if lower == upper
     end
 
-    def add_matching(query_item, node, result, &matcher)
-      return unless node && matcher.call(node.child_time_frame, query_item)
+    def add_matching(node, result, &matcher)
+      return unless node && matcher.call(node.child_time_frame)
 
-      add_matching(query_item, node.left_child, result, &matcher)
-      result << node.item if matcher.call(node.time_frame, query_item)
-      add_matching(query_item, node.right_child, result, &matcher)
+      add_matching(node.left_child, result, &matcher)
+      result << node.item if matcher.call(node.time_frame)
+      add_matching(node.right_child, result, &matcher)
     end
   end
 end
