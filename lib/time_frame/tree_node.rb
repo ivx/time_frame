@@ -30,26 +30,6 @@ class TimeFrame
         @child_time_frame = TimeFrame.new(min: min, max: max)
         ancestor.update_child_frame(@child_time_frame) if ancestor
       end
-
-      def continue_left_side_search_for_time?(time)
-        left_child && left_child.child_time_frame.cover?(time)
-      end
-
-      def continue_left_side_search_for_time_frame?(interval)
-        left_child &&
-        left_child.child_time_frame.min <= interval.max &&
-        left_child.child_time_frame.max >= interval.min
-      end
-
-      def continue_right_side_search_for_time?(time)
-        right_child && right_child.child_time_frame.cover?(time)
-      end
-
-      def continue_right_side_search_for_time_frame?(interval)
-        right_child &&
-        right_child.child_time_frame.min <= interval.max &&
-        right_child.child_time_frame.max >= interval.min
-      end
     end
   end
 end

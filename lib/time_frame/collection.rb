@@ -22,18 +22,20 @@ class TimeFrame
     end
 
     def all_covering(time)
-      [].tap do |result|
-        add_covering(time, @root, result) if any?
-      end
+      find(time) { |interval, item| interval.cover? item }
     end
 
     def all_intersecting(time_frame)
-      [].tap do |result|
-        add_intersecting(time_frame, @root, result) if any?
-      end
+      find(time_frame) { |interval, item| interval.overlaps? item }
     end
 
     private
+
+    def find(object, &matcher)
+      [].tap do |result|
+        add_matching(object, @root, result, &matcher) if any?
+      end
+    end
 
     def sort_nodes
       @tree_nodes.sort_by! do |item|
@@ -59,22 +61,12 @@ class TimeFrame
       node.update_child_frame(node.child_time_frame) if lower == upper
     end
 
-    def add_covering(time, node, result)
-      search_left = node.continue_left_side_search_for_time?(time)
-      search_right = node.continue_right_side_search_for_time?(time)
+    def add_matching(query_item, node, result, &matcher)
+      return unless node && matcher.call(node.child_time_frame, query_item)
 
-      add_covering(time, node.left_child, result) if search_left
-      result << node.item if node.time_frame.cover?(time)
-      add_covering(time, node.right_child, result) if search_right
-    end
-
-    def add_intersecting(time_frame, node, result)
-      search_left = node.continue_left_side_search_for_time_frame?(time_frame)
-      search_right = node.continue_right_side_search_for_time_frame?(time_frame)
-
-      add_intersecting(time_frame, node.left_child, result) if search_left
-      result << node.item if node.time_frame.overlaps? time_frame
-      add_intersecting(time_frame, node.right_child, result) if search_right
+      add_matching(query_item, node.left_child, result, &matcher)
+      result << node.item if matcher.call(node.time_frame, query_item)
+      add_matching(query_item, node.right_child, result, &matcher)
     end
   end
 end
