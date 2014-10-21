@@ -7,21 +7,19 @@ class TimeFrame
   class Collection
     include Enumerable
     attr_reader :tree_nodes, :root
+
     def initialize(item_list = [], sorted = false, &block)
       block ||= ->(item) { item }
       @tree_nodes = item_list.map do |item|
         TreeNode.new(item: item, &block)
       end
-
-      if any?
-        sort_nodes unless sorted
-        build_tree(0, @tree_nodes.size - 1) unless none?
-        @root = @tree_nodes[(@tree_nodes.size - 1) / 2]
-      end
+      return if none?
+      sort_nodes unless sorted
+      build_tree
     end
 
     def each(&block)
-      tree_nodes.each do |node|
+      @tree_nodes.each do |node|
         block.call(node.item)
       end
     end
@@ -46,14 +44,19 @@ class TimeFrame
       end
     end
 
-    def build_tree(lower, upper, ancestor = nil, side = nil)
+    def build_tree
+      build_sub_tree(0, @tree_nodes.size - 1)
+      @root = @tree_nodes[(@tree_nodes.size - 1) / 2]
+    end
+
+    def build_sub_tree(lower, upper, ancestor = nil, side = nil)
       mid = (lower + upper) / 2
       node = @tree_nodes[mid]
 
       node.update_ancestor_relation(ancestor, side) if ancestor && side
 
-      build_tree(lower, mid - 1, node, :left) unless lower == mid
-      build_tree(mid + 1, upper, node, :right) unless upper == mid
+      build_sub_tree(lower, mid - 1, node, :left) unless lower == mid
+      build_sub_tree(mid + 1, upper, node, :right) unless upper == mid
 
       node.update_child_frame(node.child_time_frame) if lower == upper
     end
