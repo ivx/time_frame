@@ -1,5 +1,7 @@
 AllCops:
-  Exclude: []
+  Exclude: 
+    - 'vendor/**/*'
+    - 'spec/models/vogon_poem.rb'
 
 # Setting the line length to a maximum of 80 chars.
 LineLength:

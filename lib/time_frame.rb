@@ -1,5 +1,5 @@
 # Encoding: utf-8
-require 'active_support'
+require 'active_record'
 require 'active_support/core_ext'
 require 'singleton'
 
@@ -10,6 +10,7 @@ require 'time_frame/time_frame_overlaps'
 require 'time_frame/time_frame_uniter'
 
 require 'time_frame/time_frame'
+require 'time_frame/time_frame_handler'
 
 require 'time_frame/tree_node'
 require 'time_frame/collection'
