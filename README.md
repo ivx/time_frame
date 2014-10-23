@@ -23,66 +23,79 @@ or just by specifying a `min` and `duration`
 time_frame = TimeFrame.new(min: Time.now, duration: 1.day)
 ```
 
-Let's play around a bit:
+## Let's play around a bit...
 
+Create a time frame instance from today with duration of 1 day
 ```ruby
-# Using pp in some samples to beautify output:
-require 'pp'
-# => true
-
-# Create a time frame instance from today with duration of 1 day
 time_frame = TimeFrame.new(min: Time.now, duration: 1.day)
 # => 2014-05-07 14:58:47 +0200..2014-05-08 14:58:47 +0200
+```
 
-# Get the duration
+Get the duration
+```ruby
 time_frame.duration
 # => 86400.0 seconds
+```
 
-# Shift the whole time frame by... let's say... 2 days!
+Shift the whole time frame by... let's say... 2 days!
+```ruby
 later = time_frame.shift_by(2.days)
 # => 2014-05-09 14:58:47 +0200..2014-05-10 14:58:47 +0200
+```
 
-# Shifting can also be done in the other direction...
+Shifting can also be done in the other direction...
+```ruby
 earlier = time_frame.shift_by(-2.days)
 # => 2014-05-05 14:58:47 +0200..2014-05-06 14:58:47 +0200
+```
 
-# Is another time covered by our time frame?
+Is another time covered by our time frame?
+```ruby
 my_time = Time.new(2014, 5, 7, 16)
 time_frame.cover?(my_time)
 # => true
+```
 
-# Shifting to another time... duration remains:
+Shifting to another time... duration remains:
+```ruby
 time_frame.shift_to(Time.new(2016, 1, 1))
 # => 2016-01-01 00:00:00 +0100..2016-01-02 00:00:00 +0100
+```
 
-# Checking whether another time frame overlaps:
+Checking whether another time frame overlaps:
+```ruby
 other_frame = TimeFrame.new(
   min: time_frame.min - 3.days,
   max: time_frame.min + 40.minutes
 )
 time_frame.overlaps?(other_frame)
 # => true
+```
 
-# Time frame without another time frame:
+Time frame without another time frame:
+```ruby
 time_frame = TimeFrame.new(min: Time.new(2014, 5, 12), duration: 1.day)
 other = TimeFrame.new(min: Time.new(2014, 5, 12, 19), duration: 10.minutes)
-pp time_frame.without(other)
+time_frame.without(other)
 # [2014-05-12 00:00:00 +0200..2014-05-12 19:00:00 +0200,
 #  2014-05-12 19:10:00 +0200..2014-05-13 00:00:00 +0200]
+```
 
-# You can also use without with many TimeFrame's:
+You can also use without with many TimeFrame's:
+```ruby
 another = other.shift_by(15.minutes)
-pp time_frame.without(other, another)
+time_frame.without(other, another)
 # [2014-05-12 00:00:00 +0200..2014-05-12 19:00:00 +0200,
 #  2014-05-12 19:10:00 +0200..2014-05-12 19:15:00 +0200,
 #  2014-05-12 19:25:00 +0200..2014-05-13 00:00:00 +0200]
+```
 
-# Use of the mathematical &. The intersection is returned:
+Use of the mathematical &. The intersection is returned:
+```ruby
 time_frame = TimeFrame.new(min: Time.new(2014), duration: 1.day)
 other_time_frame = time_frame.shift_by(12.hours)
 time_frame & other_time_frame
 # => 2014-01-01 12:00:00 +0100..2014-01-02 00:00:00 +0100
-
 ```
 
 These are the most common functionalities of the `TimeFrame` class, but there is quite more to discover. If you have an array of time frames, you can compute their union and pairwise intersection using `TimeFrame.union` and `TimeFrame.intersection`. For two sorted arrays of time frames, you can traverse all overlaps of time frames in the first array with time frames in the second array in **linear time** using `TimeFrame.each_overlap`.
