@@ -2,14 +2,14 @@ class TimeFrame
   # Binary tree class for searching purposes
   class Tree
     attr_accessor :ancestor, :left_child, :right_child
-    attr_reader :item
+    attr_reader :node
     def initialize(ancestor = nil, &block)
       @block = block || -> (e) { e }
       @ancestor = ancestor
     end
 
     def add(new_item)
-      tree_node = TreeNode.new(new_item) { |node| @block.call(node) }
+      tree_node = TreeNode.new(new_item) { |item| @block.call(item) }
       add_to_tree_place(tree_node)
       ancestor || self
     end
@@ -19,15 +19,12 @@ class TimeFrame
     end
 
     def empty?
-      @item.nil?
+      @node.nil?
     end
 
     def time_frame
-      return TimeFrame::EMPTY unless item
-      TimeFrame.new(
-        min: min_item_left.item.time_frame.min,
-        max: max_item_right.item.time_frame.max
-      )
+      return TimeFrame::EMPTY unless node
+
     end
 
     def height
@@ -48,19 +45,10 @@ class TimeFrame
       puts 'rotate left'
       current_tree_node = self
       new_tree_node = right_child
-      current_ancestor = ancestor
       # fix relation of ancestor
-      new_tree_node.ancestor = current_ancestor
-      if current_ancestor
-        if current_ancestor.left_child == current_tree_node
-          current_ancestor.left_child = new_tree_node
-        else
-          current_ancestor.right_child = new_tree_node
-        end
-      end
-      switch_child = new_tree_node.left_child
-      switch_child.ancestor = current_tree_node
-      current_tree_node.right_child = switch_child
+      switch_ancestor_relation(current_tree_node, new_tree_node)
+      # correct child relation
+      switch_child_of(new_tree_node, :to_right, current_tree_node)
 
       new_tree_node.left_child = current_tree_node
       current_tree_node.ancestor = new_tree_node
@@ -70,27 +58,43 @@ class TimeFrame
       puts 'rotate right'
       current_tree_node = self
       new_tree_node = left_child
-      current_ancestor = ancestor
+
       # fix relation of ancestor
-      new_tree_node.ancestor = current_ancestor
-      if current_ancestor
-        if current_ancestor.right_child == current_tree_node
-          current_ancestor.right_child = new_tree_node
-        else
-          current_ancestor.left_child = new_tree_node
-        end
-      end
-      switch_child = new_tree_node.right_child
-      switch_child.ancestor = current_tree_node
-      current_tree_node.left_child = switch_child
+      switch_ancestor_relation(current_tree_node, new_tree_node)
+      # correct child relation
+      switch_child_of(new_tree_node, :to_left, current_tree_node)
 
       new_tree_node.right_child = current_tree_node
       current_tree_node.ancestor = new_tree_node
     end
 
+    def switch_ancestor_relation(current_tree_node, new_tree_node)
+      new_tree_node.ancestor = ancestor
+      if ancestor
+        if ancestor.left_child == current_tree_node
+          ancestor.left_child = new_tree_node
+        else
+          ancestor.right_child = new_tree_node
+        end
+      end
+    end
+
+    def switch_child_of(new_tree_node, direction, current_tree_node)
+      switch_child = nil
+      case direction
+      when :to_right
+        switch_child = new_tree_node.left_child
+        current_tree_node.right_child = switch_child
+      when :to_left
+        switch_child = new_tree_node.right_child
+        current_tree_node.left_child = switch_child
+      end
+      switch_child.ancestor = current_tree_node
+    end
+
     def add_to_tree_place(tree_node)
-      return use_item_for_node(tree_node) unless item
-      if tree_node <= item
+      return use_item_for_node(tree_node) unless node
+      if tree_node <= node
         @left_child.add_to_tree_place(tree_node)
       else
         @right_child.add_to_tree_place(tree_node)
@@ -121,7 +125,7 @@ class TimeFrame
     private
 
     def use_item_for_node(tree_node)
-      @item = tree_node
+      @node = tree_node
       # set root of subtrees
       @left_child = Tree.new(self)
       @right_child = Tree.new(self)
