@@ -94,7 +94,7 @@ describe TimeFrame do
           context 'and duration is 0' do
             it 'should be valid' do
               expect do
-                TimeFrame.new(min: Date.new(2012), duration: 0.seconds)
+                TimeFrame.new(min: Time.utc(2012), duration: 0.seconds)
               end.not_to raise_error
             end
           end
