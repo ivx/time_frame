@@ -19,7 +19,7 @@ class TimeFrame
   end
 
   def duration
-    (@max_float - @min_float)
+    @duration ||= (@max_float - @min_float)
   end
 
   def ==(other)
