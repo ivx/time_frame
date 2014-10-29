@@ -34,7 +34,7 @@ class TimeFrame
   end
 
   def cover?(element)
-    if rangy?(element)
+    if element.is_a?(TimeFrame)
       element.empty? ||
       @min_float <= element.min_float && element.max_float <= max_float
     else
@@ -44,7 +44,7 @@ class TimeFrame
 
   def before?(item)
     case
-    when rangy?(item)
+    when item.is_a?(TimeFrame)
       fail_if_empty item
       item.min.to_f > max_float
     else
@@ -54,7 +54,7 @@ class TimeFrame
 
   def after?(item)
     case
-    when rangy?(item)
+    when item.is_a?(TimeFrame)
       fail_if_empty item
       item.max.to_f < min_float
     else
@@ -64,7 +64,7 @@ class TimeFrame
 
   def time_between(item)
     case
-    when rangy?(item)
+    when item.is_a?(TimeFrame)
       fail_if_empty item
       [time_between(item.min), time_between(item.max)].min_by(&:abs)
     when cover?(item)
@@ -160,10 +160,6 @@ class TimeFrame
   def fail_if_empty(item)
     fail ArgumentError, 'time frame is empty' if item.respond_to?(:empty?) &&
         item.empty?
-  end
-
-  def rangy?(item)
-    item.respond_to?(:min) && item.respond_to?(:max)
   end
 
   def check_bounds
