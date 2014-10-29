@@ -46,7 +46,7 @@ class TimeFrame
     case
     when item.is_a?(TimeFrame)
       fail_if_empty item
-      item.min.to_f > max_float
+      item.min_float > max_float
     else
       item.to_f > max_float
     end
@@ -56,7 +56,7 @@ class TimeFrame
     case
     when item.is_a?(TimeFrame)
       fail_if_empty item
-      item.max.to_f < min_float
+      item.max_float < min_float
     else
       item.to_f < min_float
     end
