@@ -11,20 +11,20 @@ class TimeFrame
   EMPTY = Empty.instance
 
   def initialize(args)
-    min = args.fetch(:min)
-    max = args.fetch(:max) { min + args.fetch(:duration) }
-    check_bounds(max, min)
-    @max = max
-    @min = min
+    @min = args.fetch(:min)
+    @max = args.fetch(:max) { @min + args.fetch(:duration) }
+    check_bounds
+    @max_float = @max.to_f
+    @min_float = @min.to_f
   end
 
   def duration
-    (max - min).seconds
+    @duration ||= (@max_float - @min_float)
   end
 
   def ==(other)
-    min == other.min &&
-      max == other.max
+    @min_float == other.min_float &&
+    @max_float == other.max_float
   end
 
   alias_method :eql?, :==
@@ -34,42 +34,44 @@ class TimeFrame
   end
 
   def cover?(element)
-    if rangy?(element)
-      element.empty? || min <= element.min && element.max <= max
+    if element.is_a?(TimeFrame)
+      element.empty? ||
+      @min_float <= element.min_float && element.max_float <= max_float
     else
-      min <= element && element <= max
+      min_float <= element.to_f && element.to_f <= max_float
     end
   end
 
   def before?(item)
     case
-    when rangy?(item)
+    when item.is_a?(TimeFrame)
       fail_if_empty item
-      item.min > max
+      item.min.to_f > max_float
     else
-      item > max
+      item.to_f > max_float
     end
   end
 
   def after?(item)
     case
-    when rangy?(item)
+    when item.is_a?(TimeFrame)
       fail_if_empty item
-      item.max < min
+      item.max.to_f < min_float
     else
-      item < min
+      item.to_f < min_float
     end
   end
 
   def time_between(item)
     case
-    when rangy?(item)
+    when item.is_a?(TimeFrame)
       fail_if_empty item
       [time_between(item.min), time_between(item.max)].min_by(&:abs)
     when cover?(item)
       0
     else
-      [(item - min).abs, (item - max).abs].min
+      float_value = item.to_f
+      [(float_value - min_float).abs, (float_value - max_float).abs].min
     end
   end
 
@@ -90,7 +92,7 @@ class TimeFrame
   # Returns true if the interior intersect.
   def overlaps?(other)
     return false if other.duration == 0
-    other.max > min && other.min < max
+    other.max_float > min_float && other.min_float < max_float
   end
 
   def &(other)
@@ -142,27 +144,25 @@ class TimeFrame
     intersection = self & other
 
     result = []
-    if intersection.min > min
+    if intersection.min_float > min_float
       result << TimeFrame.new(min: min, max: intersection.min)
     end
-    if intersection.max < max
+    if intersection.max_float < max_float
       result << TimeFrame.new(min: intersection.max, max: max)
     end
     result
   end
 
+  attr_reader :min_float, :max_float
+
   private
 
   def fail_if_empty(item)
-    fail ArgumentError, 'time frame is empty' if item.respond_to?(:empty) &&
+    fail ArgumentError, 'time frame is empty' if item.respond_to?(:empty?) &&
         item.empty?
   end
 
-  def rangy?(item)
-    item.respond_to?(:min) && item.respond_to?(:max)
-  end
-
-  def check_bounds(max, min)
+  def check_bounds
     fail ArgumentError, 'min is greater than max.' if min > max
   end
 end

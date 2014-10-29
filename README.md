@@ -23,6 +23,9 @@ or just by specifying a `min` and `duration`
 time_frame = TimeFrame.new(min: Time.now, duration: 1.day)
 ```
 
+###Important:
+TimeFrame doesn't support Date class.
+
 ## Let's play around a bit...
 
 Create a time frame instance from today with duration of 1 day
