@@ -27,6 +27,10 @@ class TimeFrame
     @max_float == other.max_float
   end
 
+  def <=>(other)
+    [@min_float, @max_float] <=> [other.min_float, other.max_float]
+  end
+
   alias_method :eql?, :==
 
   def hash

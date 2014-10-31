@@ -189,6 +189,26 @@ describe TimeFrame do
     end
   end
 
+  describe '#<=>' do
+    let(:time_frames) do
+      array = TimeFrame.new(min: Time.utc(2014), duration: 30.days)
+                       .split_by_interval(1.day)
+      time_frame1 = TimeFrame.new(min: Time.utc(2014), duration: 2.days)
+      array << time_frame1
+      array << time_frame1.shift_by(1.day)
+      array << time_frame1.shift_by(2.day)
+      array
+    end
+    it 'sorts correctly' do
+      to_be_sorted = time_frames.shuffle
+      to_be_sorted.sort!
+      to_be_sorted.each_cons(2) do |time_frame1, time_frame2|
+        expect(time_frame1.min <= time_frame2.min).to be_truthy
+        expect(time_frame1.max <= time_frame2.max).to be_truthy
+      end
+    end
+  end
+
   describe '#cover?' do
     let(:time_frame) { TimeFrame.new(min: time, duration: 4.hours) }
     context 'when argument is a Time instance' do
