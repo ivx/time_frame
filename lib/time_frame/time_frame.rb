@@ -1,7 +1,7 @@
 # Encoding: utf-8
 
 # Temporary disable class length cop.
-# rubocop:disable Style/ClassLength
+# rubocop:disable Metrics/ClassLength
 
 # The time frame class provides an specialized and enhanced range for time
 # values.
@@ -178,4 +178,4 @@ class TimeFrame
   end
 end
 
-# rubocop:enable Style/ClassLength
+# rubocop:enable Metrics/ClassLength
