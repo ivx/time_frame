@@ -69,13 +69,11 @@ class TimeFrame
   def time_between(item)
     case
     when item.is_a?(TimeFrame)
-      fail_if_empty item
-      [time_between(item.min), time_between(item.max)].min_by(&:abs)
+      time_between_time_frame(item)
     when cover?(item)
       0
     else
-      float_value = item.to_f
-      [(float_value - min_float).abs, (float_value - max_float).abs].min
+      time_between_float(item.to_f)
     end
   end
 
@@ -144,6 +142,8 @@ class TimeFrame
 
   protected
 
+  attr_reader :min_float, :max_float
+
   def without_frame(other)
     intersection = self & other
 
@@ -157,8 +157,6 @@ class TimeFrame
     result
   end
 
-  attr_reader :min_float, :max_float
-
   private
 
   def fail_if_empty(item)
@@ -168,6 +166,15 @@ class TimeFrame
 
   def check_bounds
     fail ArgumentError, 'min is greater than max.' if min > max
+  end
+
+  def time_between_time_frame(time_frame)
+    fail_if_empty time_frame
+    [time_between(time_frame.min), time_between(time_frame.max)].min_by(&:abs)
+  end
+
+  def time_between_float(float_value)
+    [(float_value - min_float).abs, (float_value - max_float).abs].min
   end
 end
 
