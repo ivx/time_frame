@@ -6,7 +6,7 @@ describe TimeFrame::Handler do
   let!(:poem_min) { VogonPoem.create(written_at: time_frame.min) }
   let!(:poem_max) { VogonPoem.create(written_at: time_frame.max) }
 
-  it 'should return all records between min and max' do
+  it 'returns all records between min and max' do
     expect(VogonPoem.where(written_at: time_frame).count).to eq 2
     expect(VogonPoem.where(written_at: time_frame).first).to eq poem_min
     expect(VogonPoem.where(written_at: time_frame).last).to eq poem_max

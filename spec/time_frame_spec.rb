@@ -10,7 +10,7 @@ describe TimeFrame do
     I18n.enforce_available_locales = true
   end
 
-  it 'should be hashable' do
+  it 'is hashable' do
     hash = {}
     time_frame1 = TimeFrame.new(min: time, duration: duration)
     time_frame2 = TimeFrame.new(min: time, duration: duration)
@@ -92,7 +92,7 @@ describe TimeFrame do
 
         context 'when min is a date' do
           context 'and duration is 0' do
-            it 'should be valid' do
+            it 'is valid' do
               expect do
                 TimeFrame.new(min: Time.utc(2012), duration: 0.seconds)
               end.not_to raise_error
@@ -135,14 +135,14 @@ describe TimeFrame do
       it { should eq 0 }
     end
     context 'when time frame containts a DST shift' do
-      it 'should gain 1 hour on summer -> winter shifts' do
+      it 'gains 1 hour on summer -> winter shifts' do
         Time.use_zone('Europe/Berlin') do
           time_frame = TimeFrame.new(min: Time.zone.local(2013, 10, 27),
                                      max: Time.zone.local(2013, 10, 28))
           expect(time_frame.duration).to eq 25.hours
         end
       end
-      it 'should lose 1 hour on winter -> summer shifts' do
+      it 'loses 1 hour on winter -> summer shifts' do
         Time.use_zone('Europe/Berlin') do
           time_frame = TimeFrame.new(min: Time.zone.local(2013, 3, 31),
                                      max: Time.zone.local(2013, 4, 1))
@@ -749,7 +749,7 @@ describe TimeFrame do
           expect(subject[day]).to eq expected.shift_by(day.days)
         end
       end
-      it 'should have a smaller time_frame at the end' do
+      it 'has a smaller time_frame at the end' do
         expected = TimeFrame.new(min: time + 7.days, duration: 12.hours)
         expect(subject[7]).to eq expected
       end
