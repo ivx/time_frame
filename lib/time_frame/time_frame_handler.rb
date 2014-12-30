@@ -5,12 +5,17 @@ class TimeFrame
     def call(column, time_frame)
       Arel::Nodes::Between.new(
         column,
-        Arel::Nodes::And.new([time_frame.min, time_frame.max])
+        Arel::Nodes::And.new(
+          [
+            Arel::Nodes.build_quoted(time_frame.min),
+            Arel::Nodes.build_quoted(time_frame.max)
+          ]
+        )
       )
     end
   end
 end
 
 ActiveRecord::PredicateBuilder.register_handler(
-    TimeFrame, TimeFrame::Handler.new
-  )
+  TimeFrame, TimeFrame::Handler.new
+)
