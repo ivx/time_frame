@@ -25,7 +25,7 @@ class TimeFrame
 
     def shift
       if @array2.one? ||
-          @array1.many? && @array1.second.min < @array2.second.min
+         @array1.many? && @array1.second.min < @array2.second.min
         @array1.shift
       else
         @array2.shift

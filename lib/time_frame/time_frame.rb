@@ -24,7 +24,7 @@ class TimeFrame
 
   def ==(other)
     @min_float == other.min_float &&
-    @max_float == other.max_float
+      @max_float == other.max_float
   end
 
   def <=>(other)
@@ -40,7 +40,7 @@ class TimeFrame
   def cover?(element)
     if element.is_a?(TimeFrame)
       element.empty? ||
-      @min_float <= element.min_float && element.max_float <= max_float
+        @min_float <= element.min_float && element.max_float <= max_float
     else
       min_float <= element.to_f && element.to_f <= max_float
     end
@@ -163,7 +163,7 @@ class TimeFrame
 
   def fail_if_empty(item)
     fail ArgumentError, 'time frame is empty' if item.respond_to?(:empty?) &&
-        item.empty?
+                                                 item.empty?
   end
 
   def check_bounds

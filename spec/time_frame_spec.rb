@@ -15,7 +15,7 @@ describe TimeFrame do
     time_frame1 = TimeFrame.new(min: time, duration: duration)
     time_frame2 = TimeFrame.new(min: time, duration: duration)
     time_frame3 = TimeFrame.new(min: time, duration: duration / 2)
-    time_frame4 = TimeFrame.new(min: time - duration / 2 , max: time + duration)
+    time_frame4 = TimeFrame.new(min: time - duration / 2, max: time + duration)
     hash[time_frame1] = 1
     expect(hash[time_frame2]).to eq 1
     expect(hash[time_frame3]).not_to eq 1
@@ -99,7 +99,6 @@ describe TimeFrame do
             end
           end
         end
-
       end
       context 'and time sframe covers a DST shift' do
         let(:time) do
@@ -192,7 +191,7 @@ describe TimeFrame do
   describe '#<=>' do
     let(:time_frames) do
       array = TimeFrame.new(min: Time.utc(2014), duration: 30.days)
-                       .split_by_interval(1.day)
+              .split_by_interval(1.day)
       time_frame1 = TimeFrame.new(min: Time.utc(2014), duration: 2.days)
       array << time_frame1
       array << time_frame1.shift_by(1.day)
@@ -408,7 +407,6 @@ describe TimeFrame do
   end
 
   describe '.union' do
-
     context 'when given an empty array' do
       subject { TimeFrame.union([]) }
       it { should eq [] }
@@ -826,7 +824,6 @@ describe TimeFrame do
   end
 
   describe '#shift_to' do
-
     let(:duration) { 1.day }
     let(:min)      { Time.zone.local(2012, 1, 2) }
     let(:max)      { min + duration }
@@ -1013,7 +1010,6 @@ describe TimeFrame do
   end
 
   describe '.covering_time_frame_for' do
-
     context 'for a single time frame' do
       let(:time_frame) { TimeFrame.new(min: time, duration: 1.hour) }
       subject { TimeFrame.covering_time_frame_for([time_frame]) }
@@ -1054,7 +1050,6 @@ describe TimeFrame do
   end
 
   describe '.each_overlap' do
-
     # Visualization of example input:
     #
     # array1:       |---|-------|   |-------|-----------|
