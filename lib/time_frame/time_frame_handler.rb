@@ -5,13 +5,15 @@ class TimeFrame
     def call(column, time_frame)
       Arel::Nodes::Between.new(
         column,
-        Arel::Nodes::And.new(
-          [
-            Arel::Nodes.build_quoted(time_frame.min),
-            Arel::Nodes.build_quoted(time_frame.max)
-          ]
-        )
+        Arel::Nodes::And.new(children_by(time_frame))
       )
+    end
+
+    def children_by(time_frame)
+      [
+        Arel::Nodes.build_quoted(time_frame.min),
+        Arel::Nodes.build_quoted(time_frame.max)
+      ]
     end
   end
 end
