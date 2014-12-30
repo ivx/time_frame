@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'models/vogon_poem'
 
-describe TimeFrame::Handler do
+describe TimeFrame::PredicateBuilderHandler do
   let(:time_frame) { TimeFrame.new(min: 5.days.ago, duration: 20.days) }
 
   before { VogonPoem.delete_all }
