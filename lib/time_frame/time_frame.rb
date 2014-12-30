@@ -132,7 +132,7 @@ class TimeFrame
 
   def self.each_overlap(frames1, frames2)
     Overlaps.new(frames1, frames2).each do |first, second|
-      yield(first, second)
+      yield first, second
     end
   end
 
@@ -146,14 +146,20 @@ class TimeFrame
 
   def without_frame(other)
     intersection = self & other
+    cut_by(intersection)
+  end
 
+  def cut_by(time_frame)
     result = []
-    if intersection.min_float > min_float
-      result << TimeFrame.new(min: min, max: intersection.min)
+
+    if time_frame.min_float > min_float
+      result << TimeFrame.new(min: min, max: time_frame.min)
     end
-    if intersection.max_float < max_float
-      result << TimeFrame.new(min: intersection.max, max: max)
+
+    if time_frame.max_float < max_float
+      result << TimeFrame.new(min: time_frame.max, max: max)
     end
+
     result
   end
 
