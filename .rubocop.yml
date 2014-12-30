@@ -1,5 +1,7 @@
 AllCops:
-  Exclude: 
+  Exclude:
+    - time_frame.gemspec
+    - Guardfile
     - 'vendor/**/*'
     - 'spec/models/vogon_poem.rb'
 

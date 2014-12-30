@@ -10,12 +10,12 @@ describe TimeFrame do
     I18n.enforce_available_locales = true
   end
 
-  it 'should be hashable' do
+  it 'is hashable' do
     hash = {}
     time_frame1 = TimeFrame.new(min: time, duration: duration)
     time_frame2 = TimeFrame.new(min: time, duration: duration)
     time_frame3 = TimeFrame.new(min: time, duration: duration / 2)
-    time_frame4 = TimeFrame.new(min: time - duration / 2 , max: time + duration)
+    time_frame4 = TimeFrame.new(min: time - duration / 2, max: time + duration)
     hash[time_frame1] = 1
     expect(hash[time_frame2]).to eq 1
     expect(hash[time_frame3]).not_to eq 1
@@ -92,14 +92,13 @@ describe TimeFrame do
 
         context 'when min is a date' do
           context 'and duration is 0' do
-            it 'should be valid' do
+            it 'is valid' do
               expect do
                 TimeFrame.new(min: Time.utc(2012), duration: 0.seconds)
               end.not_to raise_error
             end
           end
         end
-
       end
       context 'and time sframe covers a DST shift' do
         let(:time) do
@@ -135,14 +134,14 @@ describe TimeFrame do
       it { should eq 0 }
     end
     context 'when time frame containts a DST shift' do
-      it 'should gain 1 hour on summer -> winter shifts' do
+      it 'gains 1 hour on summer -> winter shifts' do
         Time.use_zone('Europe/Berlin') do
           time_frame = TimeFrame.new(min: Time.zone.local(2013, 10, 27),
                                      max: Time.zone.local(2013, 10, 28))
           expect(time_frame.duration).to eq 25.hours
         end
       end
-      it 'should lose 1 hour on winter -> summer shifts' do
+      it 'loses 1 hour on winter -> summer shifts' do
         Time.use_zone('Europe/Berlin') do
           time_frame = TimeFrame.new(min: Time.zone.local(2013, 3, 31),
                                      max: Time.zone.local(2013, 4, 1))
@@ -192,7 +191,7 @@ describe TimeFrame do
   describe '#<=>' do
     let(:time_frames) do
       array = TimeFrame.new(min: Time.utc(2014), duration: 30.days)
-                       .split_by_interval(1.day)
+              .split_by_interval(1.day)
       time_frame1 = TimeFrame.new(min: Time.utc(2014), duration: 2.days)
       array << time_frame1
       array << time_frame1.shift_by(1.day)
@@ -408,7 +407,6 @@ describe TimeFrame do
   end
 
   describe '.union' do
-
     context 'when given an empty array' do
       subject { TimeFrame.union([]) }
       it { should eq [] }
@@ -749,7 +747,7 @@ describe TimeFrame do
           expect(subject[day]).to eq expected.shift_by(day.days)
         end
       end
-      it 'should have a smaller time_frame at the end' do
+      it 'has a smaller time_frame at the end' do
         expected = TimeFrame.new(min: time + 7.days, duration: 12.hours)
         expect(subject[7]).to eq expected
       end
@@ -826,7 +824,6 @@ describe TimeFrame do
   end
 
   describe '#shift_to' do
-
     let(:duration) { 1.day }
     let(:min)      { Time.zone.local(2012, 1, 2) }
     let(:max)      { min + duration }
@@ -1013,7 +1010,6 @@ describe TimeFrame do
   end
 
   describe '.covering_time_frame_for' do
-
     context 'for a single time frame' do
       let(:time_frame) { TimeFrame.new(min: time, duration: 1.hour) }
       subject { TimeFrame.covering_time_frame_for([time_frame]) }
@@ -1054,7 +1050,6 @@ describe TimeFrame do
   end
 
   describe '.each_overlap' do
-
     # Visualization of example input:
     #
     # array1:       |---|-------|   |-------|-----------|

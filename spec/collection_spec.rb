@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe TimeFrame::Collection do
-
   let(:time_frame) { TimeFrame.new(min: Time.utc(2014), duration: 20.days) }
   let(:time) { Time.utc(2014) }
 
@@ -10,7 +9,7 @@ describe TimeFrame::Collection do
       time_frames = 20.times.map { |i| time_frame.shift_by((5 * i).days) }
       objects = time_frames.map { |tf| OpenStruct.new(interval: tf) }
       tree = TimeFrame::Collection.new(objects) { |o| o.interval }
-      expect(tree.map { |item| item.interval }).to eq time_frames
+      expect(tree.map(&:interval)).to eq time_frames
     end
   end
 
@@ -202,7 +201,6 @@ describe TimeFrame::Collection do
 
         result = tree.all_intersecting(interval.shift_by(300.days))
         expect(result).to eq []
-
       end
     end
   end
