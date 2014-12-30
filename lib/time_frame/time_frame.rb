@@ -145,19 +145,14 @@ class TimeFrame
   attr_reader :min_float, :max_float
 
   def without_frame(other)
-    intersection = self & other
-    cut_by(intersection)
-  end
-
-  def cut_by(time_frame)
     result = []
 
-    if time_frame.min_float > min_float
-      result << TimeFrame.new(min: min, max: time_frame.min)
+    if other.min_float > min_float
+      result << TimeFrame.new(min: min, max: other.min)
     end
 
-    if time_frame.max_float < max_float
-      result << TimeFrame.new(min: time_frame.max, max: max)
+    if other.max_float < max_float
+      result << TimeFrame.new(min: other.max, max: max)
     end
 
     result
