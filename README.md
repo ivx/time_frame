@@ -124,6 +124,23 @@ end
 
 ```
 
+## Usage with ActiveRecord
+When you want tu use TimeFrame with active record you need to initialize a PredicateHandler. Assuming you want tu use this feature in a model called VogonPoen < ActiveRecord::Base you can do this as follows:
+```ruby
+TimeFrame::PredicateBuilderHandler.new(VogonPoem)
+
+poem_min = VogonPoem.create(written_at: time_frame.min)
+poem_max = VogonPoem.create(written_at: time_frame.max)
+
+result = VogonPoem.where(written_at: time_frame)
+
+# The following specs will hold:
+
+# expect(result.count).to eq 2
+# expect(result.first).to eq poem_min
+# expect(result.last).to eq poem_max
+```
+
 ## Does `TimeFrame` inherit from `Range`?
 No. Ruby's `Range` class is multi-purpose, it can hold contiuous values (like floats), as well as discrete values (like integers) and behaves differently according to their type. Instance methods like `#each` or `#size` just don't make sense for time values, the same is true for all methods provided by the `Enumerable` mixin.
 
