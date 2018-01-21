@@ -25,7 +25,7 @@ class TimeFrame
 
     def shift
       if @array2.one? ||
-         @array1.many? && @array1.second.min < @array2.second.min
+         @array1.size > 1 && @array1[1].min < @array2[1].min
         @array1.shift
       else
         @array2.shift
@@ -33,7 +33,7 @@ class TimeFrame
     end
 
     def each_array_has_many_items?
-      @array1.many? || @array2.many?
+      @array1.size > 1 || @array2.size > 1
     end
 
     def yield_current_pair
