@@ -125,8 +125,25 @@ end
 ```
 
 ## Usage with ActiveRecord
-When you want tu use TimeFrame with active record you need to initialize a PredicateHandler. Assuming you want tu use this feature in a model called VogonPoen < ActiveRecord::Base you can do this as follows:
+When you want tu use TimeFrame with active record you need to define and initialize a PredicateHandler. Assuming you want to use this feature in a model called VogonPoen < ActiveRecord::Base you can do this as follows:
 ```ruby
+class TimeFrame
+  # This class tells the active_record predicate builder how to handle
+  # time_frame classes when passed into a where-clause
+  class PredicateBuilderHandler
+
+    def initialize(model)
+      @model = model
+      model
+        .predicate_builder
+        .register_handler(TimeFrame, proc do |column, time_frame|
+          column.in(time_frame.min..time_frame.max)
+        end)
+
+    end
+  end
+end
+
 TimeFrame::PredicateBuilderHandler.new(VogonPoem)
 
 poem_min = VogonPoem.create(written_at: time_frame.min)
