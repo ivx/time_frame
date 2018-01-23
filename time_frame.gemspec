@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
     'bernhard.stoecker@invision.de',
     'jan.zernisch@invision.de'
   ]
-  spec.required_ruby_version = '>= 2.0.0'
+  spec.required_ruby_version = '>= 2.2'
   spec.description   = %q(TimeFrame)
   spec.summary       = %q(Ruby gem that offers support for time frames)
   spec.homepage      = 'https://github.com/injixo/time_frame'
@@ -26,11 +26,9 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
-  spec.add_development_dependency 'rake', '~> 10.3'
-  spec.add_development_dependency 'rspec', '~> 3.0'
-  spec.add_development_dependency 'simplecov', '~> 0.8'
-  spec.add_development_dependency 'rubocop', '~> 0.23'
-  spec.add_development_dependency 'sqlite3'
-  spec.add_dependency 'activerecord', '~> 4.2'
-  spec.add_dependency 'activesupport', '~> 4.2'
+  spec.add_development_dependency 'rake', '~> 12.3'
+  spec.add_development_dependency 'rspec', '~> 3.7'
+  spec.add_development_dependency 'simplecov', '~> 0.15'
+  spec.add_development_dependency 'rubocop', '~> 0.52'
+  spec.add_development_dependency 'activesupport', '~> 5.1'
 end
