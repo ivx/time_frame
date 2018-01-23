@@ -5,6 +5,12 @@ AllCops:
     - 'vendor/**/*'
     - 'spec/models/vogon_poem.rb'
 
+MinMax:
+  Enabled: false
+
+BlockLength:
+  Enabled: false
+
 # Setting the line length to a maximum of 80 chars.
 LineLength:
   Enabled: true

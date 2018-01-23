@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TimeFrame
   # Singleton class for the empty time frame object
   class Empty < TimeFrame
@@ -16,7 +18,7 @@ class TimeFrame
     end
 
     def time_between(_)
-      fail TypeError, 'time_between is undefined for empty time frame'
+      raise TypeError, 'time_between is undefined for empty time frame'
     end
 
     def &(_other)
@@ -32,11 +34,11 @@ class TimeFrame
     end
 
     def shift_by(_)
-      fail TypeError, 'can\'t shift empty time frame'
+      raise TypeError, 'can\'t shift empty time frame'
     end
 
     def shift_to(_)
-      fail TypeError, 'can\'t shift empty time frame'
+      raise TypeError, 'can\'t shift empty time frame'
     end
 
     def without(*_)

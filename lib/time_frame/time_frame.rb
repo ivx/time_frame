@@ -1,4 +1,4 @@
-# Encoding: utf-8
+# frozen_string_literal: true
 
 # Temporary disable class length cop.
 # rubocop:disable Metrics/ClassLength
@@ -31,7 +31,7 @@ class TimeFrame
     [@min_float, @max_float] <=> [other.min_float, other.max_float]
   end
 
-  alias_method :eql?, :==
+  alias eql? ==
 
   def hash
     [min, max].hash
@@ -47,8 +47,7 @@ class TimeFrame
   end
 
   def before?(item)
-    case
-    when item.is_a?(TimeFrame)
+    if item.is_a?(TimeFrame)
       fail_if_empty item
       item.min_float > max_float
     else
@@ -57,8 +56,7 @@ class TimeFrame
   end
 
   def after?(item)
-    case
-    when item.is_a?(TimeFrame)
+    if item.is_a?(TimeFrame)
       fail_if_empty item
       item.max_float < min_float
     else
@@ -67,10 +65,9 @@ class TimeFrame
   end
 
   def time_between(item)
-    case
-    when item.is_a?(TimeFrame)
+    if item.is_a?(TimeFrame)
       time_between_time_frame(item)
-    when cover?(item)
+    elsif cover?(item)
       0
     else
       time_between_float(item.to_f)
@@ -93,7 +90,7 @@ class TimeFrame
 
   # Returns true if the interior intersect.
   def overlaps?(other)
-    return false if other.duration == 0
+    return false if other.duration.zero?
     other.max_float > min_float && other.min_float < max_float
   end
 
@@ -161,12 +158,12 @@ class TimeFrame
   private
 
   def fail_if_empty(item)
-    fail ArgumentError, 'time frame is empty' if item.respond_to?(:empty?) &&
-                                                 item.empty?
+    raise ArgumentError, 'time frame is empty' if item.respond_to?(:empty?) &&
+                                                  item.empty?
   end
 
   def check_bounds
-    fail ArgumentError, 'min is greater than max.' if min > max
+    raise ArgumentError, 'min is greater than max.' if min > max
   end
 
   def time_between_time_frame(time_frame)

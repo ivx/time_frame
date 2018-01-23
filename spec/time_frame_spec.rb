@@ -1,4 +1,6 @@
-# Encoding: utf-8
+
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe TimeFrame do
@@ -191,7 +193,7 @@ describe TimeFrame do
   describe '#<=>' do
     let(:time_frames) do
       array = TimeFrame.new(min: Time.utc(2014), duration: 30.days)
-              .split_by_interval(1.day)
+                       .split_by_interval(1.day)
       time_frame1 = TimeFrame.new(min: Time.utc(2014), duration: 2.days)
       array << time_frame1
       array << time_frame1.shift_by(1.day)
@@ -827,11 +829,11 @@ describe TimeFrame do
     let(:duration) { 1.day }
     let(:min)      { Time.zone.local(2012, 1, 2) }
     let(:max)      { min + duration }
-    let(:time_frame)    { TimeFrame.new(min: min, max: max) }
+    let(:time_frame) { TimeFrame.new(min: min, max: max) }
 
     context 'when shifting to a future time' do
       let(:destination) { min + duration }
-      subject   { time_frame.shift_to(destination) }
+      subject { time_frame.shift_to(destination) }
       it { should_not equal time_frame }
 
       describe '#min' do
@@ -847,7 +849,7 @@ describe TimeFrame do
 
     context 'when shifting to a past time' do
       let(:destination) { min - duration }
-      subject   { time_frame.shift_to(destination) }
+      subject { time_frame.shift_to(destination) }
       it { should_not equal time_frame }
 
       describe '#min' do
@@ -863,7 +865,7 @@ describe TimeFrame do
 
     context 'when shifting to same time' do
       let(:destination) { min }
-      subject   { time_frame.shift_to(destination) }
+      subject { time_frame.shift_to(destination) }
       it { should_not equal time_frame }
 
       describe '#min' do

@@ -1,4 +1,6 @@
-# Encoding: utf-8
+
+# frozen_string_literal: true
+
 class TimeFrame
   # Provides a method to split a time frame by a given interval. It returns
   # an array which contains the intervals as TimeFrame instances.

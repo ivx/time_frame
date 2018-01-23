@@ -1,4 +1,4 @@
-# Encoding: utf-8
+# frozen_string_literal: true
 
 class TimeFrame
   # This collection supports the concept of interval trees to improve the
@@ -15,9 +15,9 @@ class TimeFrame
       build_tree(sorted) if @tree_nodes.any?
     end
 
-    def each(&block)
+    def each
       @tree_nodes.each do |node|
-        block.call(node.item)
+        yield(node.item)
       end
     end
 
@@ -62,10 +62,10 @@ class TimeFrame
     end
 
     def add_matching(node, result, &matcher)
-      return unless node && matcher.call(node.child_time_frame)
+      return unless node && yield(node.child_time_frame)
 
       add_matching(node.left_child, result, &matcher)
-      result << node.item if matcher.call(node.time_frame)
+      result << node.item if yield(node.time_frame)
       add_matching(node.right_child, result, &matcher)
     end
   end

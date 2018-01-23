@@ -1,4 +1,6 @@
-# Encoding: utf-8
+
+# frozen_string_literal: true
+
 class TimeFrame
   # Traverses all intersections of in the cross product of two arrays of
   # time_frames and yields the block for each pair (linear runtime)

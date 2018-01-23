@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe TimeFrame::Collection do
@@ -6,9 +8,9 @@ describe TimeFrame::Collection do
 
   describe '#each' do
     it 'has map implemented' do
-      time_frames = 20.times.map { |i| time_frame.shift_by((5 * i).days) }
+      time_frames = Array.new(20) { |i| time_frame.shift_by((5 * i).days) }
       objects = time_frames.map { |tf| OpenStruct.new(interval: tf) }
-      tree = TimeFrame::Collection.new(objects) { |o| o.interval }
+      tree = TimeFrame::Collection.new(objects, &:interval)
       expect(tree.map(&:interval)).to eq time_frames
     end
   end
@@ -21,7 +23,7 @@ describe TimeFrame::Collection do
       end
 
       it 'returns all covering time_frames' do
-        time_frames = 20.times.map { |i| time_frame.shift_by((5 * i).days) }
+        time_frames = Array.new(20) { |i| time_frame.shift_by((5 * i).days) }
         tree = TimeFrame::Collection.new(time_frames)
 
         result = tree.all_covering(time)
@@ -54,15 +56,15 @@ describe TimeFrame::Collection do
 
     context 'when objects containing time_frames are given' do
       it 'returns an empty array if the collection is empty' do
-        collection = TimeFrame::Collection.new([]) { |item| item.time_frame }
+        collection = TimeFrame::Collection.new([], &:time_frame)
         expect(collection.all_covering(time)).to eq []
       end
 
       it 'returns all covering time_frames' do
-        objects = 20.times.map do |i|
+        objects = Array.new(20) do |i|
           OpenStruct.new(time_frame: time_frame.shift_by((5 * i).days))
         end
-        tree = TimeFrame::Collection.new(objects) { |item| item.time_frame }
+        tree = TimeFrame::Collection.new(objects, &:time_frame)
 
         result = tree.all_covering(time - 1.day)
         expect(result).to eq []
@@ -104,44 +106,44 @@ describe TimeFrame::Collection do
         expect(collection.all_intersecting(time)).to eq []
       end
       it 'returns all intersecting time_frames' do
-        time_frames = 20.times.map { |i| time_frame.shift_by((5 * i).days) }
+        time_frames = Array.new(20) { |i| time_frame.shift_by((5 * i).days) }
         tree = TimeFrame::Collection.new(time_frames)
         interval = TimeFrame.new(min: time, duration: 1.hour)
 
-        result = tree.all_intersecting(interval.shift_by((-1).day))
+        result = tree.all_intersecting(interval.shift_by(-1.day))
         expect(result).to eq []
 
         result = tree.all_intersecting(interval)
-        expected_result = time_frames.select do |t|
-          !(t & (interval)).empty?
+        expected_result = time_frames.reject do |t|
+          (t & interval).empty?
         end
         expect(result).to eq expected_result
 
         this_interval = interval.shift_by(5.days)
         result = tree.all_intersecting(this_interval)
-        expected_result = time_frames.select do |t|
-          !(t & (this_interval)).empty?
+        expected_result = time_frames.reject do |t|
+          (t & this_interval).empty?
         end
         expect(result).to eq expected_result
 
         this_interval = interval.shift_by(7.days)
         result = tree.all_intersecting(this_interval)
-        expected_result = time_frames.select do |t|
-          !(t & (this_interval)).empty?
+        expected_result = time_frames.reject do |t|
+          (t & this_interval).empty?
         end
         expect(result).to eq expected_result
 
         this_interval = interval.shift_by(17.days)
         result = tree.all_intersecting(this_interval)
-        expected_result = time_frames.select do |t|
-          !(t & (this_interval)).empty?
+        expected_result = time_frames.reject do |t|
+          (t & this_interval).empty?
         end
         expect(result).to eq expected_result
 
         this_interval = interval.shift_by(42.days)
         result = tree.all_intersecting(this_interval)
-        expected_result = time_frames.select do |t|
-          !(t & (this_interval)).empty?
+        expected_result = time_frames.reject do |t|
+          (t & this_interval).empty?
         end
         expect(result).to eq expected_result
 
@@ -152,50 +154,50 @@ describe TimeFrame::Collection do
 
     context 'when objects containing time_frames are given' do
       it 'returns an empty array if the collection is empty' do
-        collection = TimeFrame::Collection.new([]) { |item| item.time_frame }
+        collection = TimeFrame::Collection.new([], &:time_frame)
         expect(collection.all_intersecting(time)).to eq []
       end
       it 'returns all intersecting time_frames' do
-        objects = 20.times.map do |i|
+        objects = Array.new(20) do |i|
           OpenStruct.new(time_frame: time_frame.shift_by((5 * i).days))
         end
-        tree = TimeFrame::Collection.new(objects) { |item| item.time_frame }
+        tree = TimeFrame::Collection.new(objects, &:time_frame)
         interval = TimeFrame.new(min: time, duration: 1.hour)
 
-        result = tree.all_intersecting(interval.shift_by((-1).day))
+        result = tree.all_intersecting(interval.shift_by(-1.day))
         expect(result).to eq []
 
         result = tree.all_intersecting(interval)
-        expected_result = objects.select do |object|
-          !(object.time_frame & (interval)).empty?
+        expected_result = objects.reject do |object|
+          (object.time_frame & interval).empty?
         end
         expect(result).to eq expected_result
 
         this_interval = interval.shift_by(5.days)
         result = tree.all_intersecting(this_interval)
-        expected_result = objects.select do |object|
-          !(object.time_frame & (this_interval)).empty?
+        expected_result = objects.reject do |object|
+          (object.time_frame & this_interval).empty?
         end
         expect(result).to eq expected_result
 
         this_interval = interval.shift_by(7.days)
         result = tree.all_intersecting(this_interval)
-        expected_result = objects.select do |object|
-          !(object.time_frame & (this_interval)).empty?
+        expected_result = objects.reject do |object|
+          (object.time_frame & this_interval).empty?
         end
         expect(result).to eq expected_result
 
         this_interval = interval.shift_by(17.days)
         result = tree.all_intersecting(this_interval)
-        expected_result = objects.select do |object|
-          !(object.time_frame & (this_interval)).empty?
+        expected_result = objects.reject do |object|
+          (object.time_frame & this_interval).empty?
         end
         expect(result).to eq expected_result
 
         this_interval = interval.shift_by(42.days)
         result = tree.all_intersecting(this_interval)
-        expected_result = objects.select do |object|
-          !(object.time_frame & (this_interval)).empty?
+        expected_result = objects.reject do |object|
+          (object.time_frame & this_interval).empty?
         end
         expect(result).to eq expected_result
 
