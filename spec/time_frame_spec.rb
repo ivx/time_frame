@@ -77,7 +77,7 @@ describe TimeFrame do
       end
       context 'and duration is negative' do
         let(:invalid_t_r) { TimeFrame.new(min: time, duration: - 1.hour) }
-        specify { expect { invalid_t_r }.to raise_error }
+        specify { expect { invalid_t_r }.to raise_error(ArgumentError) }
       end
       context 'and duration is 0' do
         subject { TimeFrame.new(min: time, duration: 0.hour) }
