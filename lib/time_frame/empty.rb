@@ -17,7 +17,7 @@ class TimeFrame
       true
     end
 
-    def time_between(_)
+    def time_between(_not_used)
       raise TypeError, 'time_between is undefined for empty time frame'
     end
 
@@ -25,23 +25,23 @@ class TimeFrame
       self
     end
 
-    def overlaps?(_)
+    def overlaps?(_not_used)
       false
     end
 
-    def split_by_interval(_)
+    def split_by_interval(_not_used)
       []
     end
 
-    def shift_by(_)
+    def shift_by(_not_used)
       raise TypeError, 'can\'t shift empty time frame'
     end
 
-    def shift_to(_)
+    def shift_to(_not_used)
       raise TypeError, 'can\'t shift empty time frame'
     end
 
-    def without(*_)
+    def without(*_not_used)
       []
     end
 
