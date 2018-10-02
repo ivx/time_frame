@@ -1,3 +1,9 @@
+# DEPRECATED
+
+##`time_frame` is no longer maintained and will not receive any updates from invision. 
+##The repo itself might also be removed in the future. If you depend on it, we suggest forking the project.
+
+
 # TimeFrame
 
 [![Gem Version](https://badge.fury.io/rb/time_frame.svg)](http://badge.fury.io/rb/time_frame)
